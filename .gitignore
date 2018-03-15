@@ -3,3 +3,5 @@ Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
+
+*.meta
