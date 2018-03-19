@@ -62,22 +62,19 @@ public class WorldGeneration : MonoBehaviour {
 		sectors[512, 512].sector(); //--
 		sectors[512, 511].sector(); //-+
 
-		//Randomize Values
-		seaLevel = seed % rand.Next(64, 256);
-		numMountains = seed % rand.Next();
-
-		//TODO: add landmarks, add other blocks, add player, enemy spawns, and saving the map.
-		//Generate base map from (0,0,0)
+		//TODO: add landmarks, add other blocks, add player, enemy spawns, and saving the map. 
+		//	Also add first set of sectors for drawdistance.
+		//Generate base map from (0,0,0) aka center
 		for (int x = 0; x < 256; x++)
 		{
 			for (int y = 0; y < 256; y++)
 			{
 				for (int z = 0; z < 256; z++)
 				{
-					sectors[512, 512].setMap(x, y, z, block);
-					sectors[512, 511].setMap(x, y, z, block);
-					sectors[511, 511].setMap(x, y, z, block);
-					sectors[511, 512].setMap(x, y, z, block);					
+					sectors[512, 512].setMap(x, y, z, blocks[rand.Next(0, blocks.Length - 1)]);
+					sectors[512, 511].setMap(x, y, z, blocks[rand.Next(0, blocks.Length - 1)]);
+					sectors[511, 511].setMap(x, y, z, blocks[rand.Next(0, blocks.Length - 1)]);
+					sectors[511, 512].setMap(x, y, z, blocks[rand.Next(0, blocks.Length - 1)]);					
 
 					if (x < 64 && z < 64  && y < 1) {
 						Instantiate(sectors[512, 512].getMap(x, y, z), new Vector3(x, -y, z), Quaternion.identity);
