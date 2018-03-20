@@ -3,6 +3,8 @@ Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
+obj/
+.vs/
 
 *.meta
 *.csproj

@@ -28,17 +28,19 @@ public class WorldController : MonoBehaviour {
 		int x = (int) Player.transform.position.x;
 		int z = (int) Player.transform.position.z;
 
-		if (!gen.isGenerated(x, z + drawDistance)) { //if z + draw is not generated
-			gen.generateSector(x, z + drawDistance);
+		if (!gen.IsGenerated(x, z + drawDistance)) { //if z + draw is not generated
+			gen.GenerateSector(x, z + drawDistance);
 		}
-		else if (!gen.isGenerated(x, z - drawDistance)) { //if z - draw is not generated
-			gen.generateSector(x, z - drawDistance);
+		else if (!gen.IsGenerated(x, z - drawDistance)) { //if z - draw is not generated
+			gen.GenerateSector(x, z - drawDistance);
 		}
-		else if (!gen.isGenerated(x + drawDistance, z)) { //if x + draw is not generated
-			gen.generateSector(x + drawDistance, z);
+		else if (!gen.IsGenerated(x + drawDistance, z)) { //if x + draw is not generated
+			gen.GenerateSector(x + drawDistance, z);
 		}
-		else if (!!gen.isGenerated(x - drawDistance, z)) { //if x - draw is not generated
-			gen.generateSector(x - drawDistance, z);
+		else if (!gen.IsGenerated(x - drawDistance, z)) { //if x - draw is not generated
+			gen.GenerateSector(x - drawDistance, z);
 		}
 	}
+
+	
 }
