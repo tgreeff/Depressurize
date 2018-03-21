@@ -11,10 +11,118 @@ MonoBehaviour:
   m_Script: {fileID: -530159753, guid: 7d3a677691631814c819f6c04b639945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastUpdatedAtString: 2018-03-21T02:50:16.4855623-07:00
-  lastVerifiedAtString: 2018-03-21T02:50:16.4855623-07:00
+  lastUpdatedAtString: 2018-03-21T02:52:19.4678795-07:00
+  lastVerifiedAtString: 2018-03-21T02:52:19.4678795-07:00
   initializedAtString: 2018-03-20T17:10:23.8768288-07:00
   log:
+  - commitID: 77cd8b3ac5c15f5f4954dcd6b8b08190b47a36be
+    mergeA: 
+    mergeB: 
+    authorName: Taylor Greeff
+    authorEmail: tgreeff@asu.edu
+    commitEmail: tgreeff@asu.edu
+    commitName: Taylor Greeff
+    summary: Map now generates and added GitHub plugins
+    description: Map now generates and added GitHub plugins
+    timeString: 2018-03-21T02:52:17.0000000-07:00
+    commitTimeString: 2018-03-21T02:52:17.0000000-07:00
+    changes:
+    - path: Assets\Prefabs\hall.prefab
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Assets\Prefabs\hall.prefab
+      projectPath: Assets\Prefabs\hall.prefab
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Assets\Scripts\Generation.cs
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Assets\Scripts\Generation.cs
+      projectPath: Assets\Scripts\Generation.cs
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Assets\Scripts\Sector.cs
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Assets\Scripts\Sector.cs
+      projectPath: Assets\Scripts\Sector.cs
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Assets\Scripts\WorldController.cs
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Assets\Scripts\WorldController.cs
+      projectPath: Assets\Scripts\WorldController.cs
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Library\CurrentLayout.dwlt
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\CurrentLayout.dwlt
+      projectPath: Library\CurrentLayout.dwlt
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Library\EditorInstance.json
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\EditorInstance.json
+      projectPath: Library\EditorInstance.json
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\EditorUserBuildSettings.asset
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\EditorUserBuildSettings.asset
+      projectPath: Library\EditorUserBuildSettings.asset
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Library\EditorUserSettings.asset
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\EditorUserSettings.asset
+      projectPath: Library\EditorUserSettings.asset
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Library\assetDatabase3
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\assetDatabase3
+      projectPath: Library\assetDatabase3
+      originalPath: 
+      status: 3
+      staged: 0
+    - path: Library\gfu\cache\branches.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\branches.yaml
+      projectPath: Library\gfu\cache\branches.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\gitlocks.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\gitlocks.yaml
+      projectPath: Library\gfu\cache\gitlocks.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\gitlog.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\gitlog.yaml
+      projectPath: Library\gfu\cache\gitlog.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\gitstatusentries.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\gitstatusentries.yaml
+      projectPath: Library\gfu\cache\gitstatusentries.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\gittrackingstatus.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\gittrackingstatus.yaml
+      projectPath: Library\gfu\cache\gittrackingstatus.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\gituser.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\gituser.yaml
+      projectPath: Library\gfu\cache\gituser.yaml
+      originalPath: 
+      status: 4
+      staged: 0
+    - path: Library\gfu\cache\repoinfo.yaml
+      fullPath: H:\Classes\SER432-Game\Project\Depressurize\Library\gfu\cache\repoinfo.yaml
+      projectPath: Library\gfu\cache\repoinfo.yaml
+      originalPath: 
+      status: 4
+      staged: 0
   - commitID: 65afcc4043008dea10572e43394383943c71f301
     mergeA: 
     mergeB: 
