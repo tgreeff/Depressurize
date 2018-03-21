@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using System;
 
 public class Generation {
-	static System.Random rand = new System.Random();
-	private Transform[] tiles;
+	public static System.Random rand = new System.Random();
+	public Transform[] tiles;
 	public int drawDistance;
 	public int spawnX, spawnY;
 	public int seed;			
@@ -13,114 +11,90 @@ public class Generation {
 
 	//-------CONSTANTS/-------
 	public const int MAX_SECTOR = 128;
+	public const int MAX_TRANSFORM = 16;
 	public const int EMPTY = 0;
 	public const int START = 1;
 	public const int HALL = 2;
 
 	// Use this for initialization
-	public Generation(int drawDist, Transform[] b) {
+	public Generation(int drawDist, Transform[] b, int sectorX, int sectorY) {
 		seed = rand.Next();
 
-		//Get spawn sector and location
-		spawnX = rand.Next(0, 15);
-		spawnY = rand.Next(0, 15);
-		int sectorX = rand.Next(0, MAX_SECTOR-1);
-		int sectorY = rand.Next(0, MAX_SECTOR-1);
-
-		this.tiles = new Transform[b.Length];
+		//Copy Tile table
+		tiles = new Transform[b.Length];
 		for (int x = 0; x < b.Length; x++) {
-			this.tiles[x] = b[x];
-		}	
+			tiles[x] = b[x];
+		}
 
+		//Get spawn sector and location
+		int spawnX = rand.Next(0, MAX_TRANSFORM - 1);
+		int spawnY = rand.Next(0, MAX_TRANSFORM - 1);
+		int spawnZ = rand.Next(0, MAX_TRANSFORM - 1);
+
+		int rot = rand.Next(0, 3);
+
+		//Initialize sectors
 		sectors = new Sector[MAX_SECTOR, MAX_SECTOR];
-
 		for (int x = 0; x < MAX_SECTOR; x++ ) {
 			for (int y = 0; y < MAX_SECTOR; y++) {
-				sectors[x, y] = new Sector();
+				sectors[x, y] = new Sector(x, y);
 			}
 		}
-		this.GenerateSector(sectorX, sectorY);
-		this.InstanciateSector(sectorX, sectorY);
-		
+
+		GenerateSector(sectorX, sectorY);
+		//setSector(sectors[sectorX, sectorY], sectorX, sectorY, 1); //For testing spawn distance
+
+		tiles[START].position = new Vector3(spawnX, spawnY, spawnZ);
+		tiles[START].rotation = Quaternion.Euler(0, rot * 90, 0);
+		sectors[sectorX, sectorY].SetMapTransform(spawnX, spawnY, spawnZ, START);
+
+		InstanciateSector(sectorX, sectorY);
 	}
 
-	//TODO - Add item spawn generation, add player, enemy spawns, and saving the map. 
-	//Generates the sectors based off of the generation requirements
+	//TODO: Add item spawn generation, add player, enemy spawns, and saving the map. 
+	//Generates the sectors based off of the generation requirements and instantiates them
 	public void GenerateSector(int xSector, int ySector) {
 		if(this.sectors[xSector, ySector].generated) {
 			return;
 		}
+		//int t = rand.Next(0, tiles.Length-1); //chosen tile value
+		sectors[xSector, ySector] = new Sector(xSector, ySector);
+		setSector(sectors[xSector, ySector], xSector, ySector, EMPTY);
 
-		int t = rand.Next(0, tiles.Length-1); //chosen tile value
+		//Add Hallway Crossroads
+		int numVertex = rand.Next(6, 16);
+		for(int v = 0; v < numVertex ; v++) {
+			int x = rand.Next(0, MAX_TRANSFORM - 1);
+			int y = rand.Next(0, MAX_TRANSFORM - 1);
+			int z = rand.Next(0, MAX_TRANSFORM - 1);
+			int rot = rand.Next(0, 3); //randomize rotation
 
-		sectors[xSector, ySector] = new Sector();
-		for (int x = 0; x >= 16; x++) { //TODO flip to 16 -> 0
-			for (int y = 0; y < 16; y++) {
-				for (int z = 0; z < 16; z++) {
-					Transform prevX = null;
-					Transform prevY = null;
-					Transform prevZ = null;
-					if (x != 0) {
-						 prevX = sectors[xSector, ySector].GetMapTransform(x - 1, y, z);
-					}
-					if(y != 0) {
-						prevY = sectors[xSector, ySector].GetMapTransform(x, y - 1, z);
-					}
-					if(z != 0) {
-						prevZ = sectors[xSector, ySector].GetMapTransform(x, y, z - 1);
-					}
-
-					CheckTiles(prevX, prevY, prevZ);
-					
-
-					if(sectors[xSector, ySector].GetMapTransform(x, y , z) != null) {
-						sectors[xSector, ySector].SetMapTransform(x, y, z, tiles[t]);
-					}
-				}
-			}
+			//tiles[HALL].position = new Vector3(16 * 5 * xSector + 5 * x, y, 16 * 5 * ySector + 5 * z);
+			//tiles[HALL].rotation = Quaternion.Euler(0, rot * 90, 0);
+			sectors[xSector, ySector].SetMapTransform(x, y, z, HALL);	
 		}
 
-		this.sectors[xSector, ySector].generated = true;
+		ConnectTiles(sectors[xSector, ySector]);
+		AddRooms(sectors[xSector, ySector]);
+		sectors[xSector, ySector].generated = true;
 	}
 
 	//Add special cases as the tiles are added
-	public void CheckTiles(Transform x, Tranform y, Transform z, int t) {
-		Boolean xMatch = x == tiles[t];
-		Boolean yMatch = y == tiles[t];
-		Boolean zMatch = z == tiles[t];
-
-		if (xMatch) {
-			//TODO change t based on value of tile
-		}
-		if (yMatch) {
-
-		}
-		if (zMatch) {
-
-		}
-
-		switch (t) {
-			case 0:
-
-				break;
-
-			case 1:
-
-				break;
-
-			case 2:
-
-				break;
-
-			default:
-
-				break;
-		}
+	//TODO: Add ladders and other rooms with connections
+	public void ConnectTiles(Sector s) {
+		
 	}
 
-	//Returns the sector based on coordinates
-	public Sector GetSector(float x, float y, float z) {
-		return sectors[(int) x/5, (int) z/5];
+	//TODO: Adds rooms connected to hallways
+	public void AddRooms(Sector s) {
+
+	}
+
+	//Returns the Vec2 of location coordinates
+	public Vector2 GetSector(float x, float y, float z) {
+		int xSector = (int) Math.Floor(x / 80);
+		int ySector = (int) Math.Floor(z / 80);
+		return new Vector2(xSector, ySector);
 	}
 	
 	//Returns whether the sector was generated
@@ -132,12 +106,25 @@ public class Generation {
 		return sectors[xSector, ySector].instanciated;
 	}
 
-	//Instantiates the transform of the tile
+	public void setSector(Sector s, int xSector, int ySector, int type) {
+		for (int x = 0; x < MAX_TRANSFORM; x++) {
+			for (int y = 0; y < MAX_TRANSFORM; y++) {
+				for (int z = 0; z < MAX_TRANSFORM; z++) {
+					s.SetMapTransform(x, y, z, type);
+				}
+			}
+		}
+	}
+	//Instantiates the transform of the tile 
+	//TODO: Have objects rotate to allign 
+	//TODO: Avoid instancing empty transforms
 	public void InstanciateSector(int xSector, int ySector) {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
-					GameObject.Instantiate(this.sectors[xSector, ySector].GetMapTransform(x, y, z));
+					Vector3 v = new Vector3(80 * xSector + (5 * x), 5 * y, 80 * ySector + (5 * z));
+					Transform t = tiles[sectors[xSector, ySector].GetMapTransform(x, y, z)];
+					GameObject.Instantiate(t, v, Quaternion.identity);			
 				}
 			}
 		}
@@ -149,14 +136,14 @@ public class Generation {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
-					GameObject.Destroy(this.sectors[xSector, ySector].GetMapTransform(x, y, z));
+					GameObject.Destroy(tiles[sectors[xSector, ySector].GetMapTransform(x, y, z)]);
 				}
 			}
-
 			sectors[xSector, ySector].instanciated = false;
 		}
 	}
 
+	//Cleans up the memory of the sectors 
 	public void DestroySectors() {
 		for (int xS = 0; xS < MAX_SECTOR; xS++) {
 			for (int yS = 0; yS < MAX_SECTOR; yS++) {
