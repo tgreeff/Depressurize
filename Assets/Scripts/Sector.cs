@@ -9,6 +9,7 @@ public class Sector{
 	public Vector2 coordinates;
 	public bool generated;  //Allows for quicker checking of generation
 	public bool instanciated; //Allows for quick checking whether it is in the game
+	private int numHallVertex; //number of hall vertexes placed in this sector
 
 	//-------CONSTANTS/-------
 	public const int MAX_TRANSFORM = 16;
@@ -21,6 +22,7 @@ public class Sector{
 		coordinates = new Vector2(x, y);
 		generated = false;
 		instanciated = false;
+		numHallVertex = 0;
 	}
 
 	//Set the transform to the block transform
@@ -63,5 +65,16 @@ public class Sector{
 	//Get the transform located in the map array
 	public int GetMap(int x, int y, int z) {
 		return mapInt[x, y, z];
+	}
+
+	//Get number of hall vertexes currently in the sector
+	public int GetNumHallVertex() {
+		return numHallVertex;
+	}
+
+	//Sets the number hall vertexs currently in the sector
+	//Useful for incrementing number currently within the sector
+	public void SetNumHallVertex(int value) {
+		numHallVertex = value;
 	}
 }
