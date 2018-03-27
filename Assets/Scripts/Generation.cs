@@ -8,6 +8,7 @@ public class Generation {
 	public int spawnX, spawnY;
 	public int seed;			
 	Sector[,] sectors;
+	public  int numTiles = 0;
 	
 	//-------CONSTANTS/-------
 	public const int MAX_SECTOR = 128;
@@ -44,10 +45,11 @@ public class Generation {
 		GenerateSector(sectorX, sectorY);
 		//setSector(sectors[sectorX, sectorY], sectorX, sectorY, 1); //For testing spawn distance
 
+		//Add spawn
 		tiles[START].position = new Vector3(spawnX, spawnY, spawnZ);
 		tiles[START].rotation = Quaternion.Euler(0, rot * 90, 0);
 		sectors[sectorX, sectorY].SetMapTransform(spawnX, spawnY, spawnZ, START);
-
+		numTiles++;
 	}
 
 	//TODO: Change hall vertexes with corners or other connectors
@@ -74,6 +76,7 @@ public class Generation {
 			//tiles[HALL].rotation = Quaternion.Euler(0, rot * 90, 0);
 			sectors[xSector, ySector].SetMapTransform(x, y, z, HALL);
 			sectors[xSector, ySector].SetNumHallVertex(sectors[xSector, ySector].GetNumHallVertex()+1);
+			numTiles++;
 		}
 
 		ConnectTiles(sectors[xSector, ySector]);

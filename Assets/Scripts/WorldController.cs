@@ -34,10 +34,15 @@ public class WorldController : MonoBehaviour {
 		currentSectorY = sectorY;
 
 		gen = new Generation(drawDistance, blocks, sectorX, sectorY);
+		while(gen.numTiles == 0) {
+			sectorX = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
+			sectorY = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
+			gen = new Generation(drawDistance, blocks, sectorX, sectorY);
+		}
 
 		for (int x = -drawDistance; x < drawDistance; x++) {
 			for (int y = -drawDistance; y < drawDistance; y++) {
-				if((sectorX + x >= 0 && sectorX + x < Generation.MAX_SECTOR) || (sectorY + y >= 0 && sectorY + y < Generation.MAX_SECTOR)) {
+				if((sectorX + x >= 0 && sectorX + x < Generation.MAX_SECTOR) && (sectorY + y >= 0 && sectorY + y < Generation.MAX_SECTOR)) {
 					gen.GenerateSector(sectorX + x, sectorY + y);
 					gen.InstanciateSector(sectorX + x, sectorY + y);
 				}
@@ -48,7 +53,7 @@ public class WorldController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//TODO: update the players current sector.
-		//TODO: Add the correct location of the sector based on getSector()
+		//TODO: Add the correct location of the current sector based on getSector()
 		if(timer >= timeLimit) {
 			CheckDrawDistance();
 			UpdateCurrentSector();
