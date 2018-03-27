@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: -1697640569, guid: 7d3a677691631814c819f6c04b639945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastUpdatedAtString: 2018-03-20T17:15:00.5148460-07:00
-  lastVerifiedAtString: 2018-03-21T02:50:17.0584620-07:00
-  initializedAtString: 2018-03-20T17:10:24.5617253-07:00
-  gitName: Taylor Greeff
+  lastUpdatedAtString: 2018-03-27T10:49:10.3734426-07:00
+  lastVerifiedAtString: 2018-03-27T12:42:22.6294792-07:00
+  initializedAtString: 2018-03-27T12:15:07.0877621-07:00
+  gitName: tgreeff
   gitEmail: tgreeff@asu.edu

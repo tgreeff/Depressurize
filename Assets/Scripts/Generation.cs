@@ -8,7 +8,8 @@ public class Generation {
 	public int spawnX, spawnY;
 	public int seed;			
 	Sector[,] sectors;
-
+	public  int numTiles = 0;
+	
 	//-------CONSTANTS/-------
 	public const int MAX_SECTOR = 128;
 	public const int MAX_TRANSFORM = 16;
@@ -44,13 +45,15 @@ public class Generation {
 		GenerateSector(sectorX, sectorY);
 		//setSector(sectors[sectorX, sectorY], sectorX, sectorY, 1); //For testing spawn distance
 
+		//Add spawn
 		tiles[START].position = new Vector3(spawnX, spawnY, spawnZ);
 		tiles[START].rotation = Quaternion.Euler(0, rot * 90, 0);
 		sectors[sectorX, sectorY].SetMapTransform(spawnX, spawnY, spawnZ, START);
-
-		InstanciateSector(sectorX, sectorY);
+		numTiles++;
 	}
 
+	//TODO: Change hall vertexes with corners or other connectors
+	//TODO: Instantiate every time a tile gets picked.
 	//TODO: Add item spawn generation, add player, enemy spawns, and saving the map. 
 	//Generates the sectors based off of the generation requirements and instantiates them
 	public void GenerateSector(int xSector, int ySector) {
@@ -62,7 +65,7 @@ public class Generation {
 		setSector(sectors[xSector, ySector], xSector, ySector, EMPTY);
 
 		//Add Hallway Crossroads
-		int numVertex = rand.Next(6, 16);
+		int numVertex = rand.Next(56, 320); //Should be at least 4 on 14 layers.
 		for(int v = 0; v < numVertex ; v++) {
 			int x = rand.Next(0, MAX_TRANSFORM - 1);
 			int y = rand.Next(0, MAX_TRANSFORM - 1);
@@ -71,7 +74,9 @@ public class Generation {
 
 			//tiles[HALL].position = new Vector3(16 * 5 * xSector + 5 * x, y, 16 * 5 * ySector + 5 * z);
 			//tiles[HALL].rotation = Quaternion.Euler(0, rot * 90, 0);
-			sectors[xSector, ySector].SetMapTransform(x, y, z, HALL);	
+			sectors[xSector, ySector].SetMapTransform(x, y, z, HALL);
+			sectors[xSector, ySector].SetNumHallVertex(sectors[xSector, ySector].GetNumHallVertex()+1);
+			numTiles++;
 		}
 
 		ConnectTiles(sectors[xSector, ySector]);
@@ -81,12 +86,92 @@ public class Generation {
 
 	//Add special cases as the tiles are added
 	//TODO: Add ladders and other rooms with connections
+	//TODO: Add vertical connections
 	public void ConnectTiles(Sector s) {
-		
+		int i = 0;
+		Vector3[] halls = new Vector3[s.GetNumHallVertex()];
+		int[] numHalls = new int[MAX_TRANSFORM];
+		for (int y = 0; y < MAX_TRANSFORM; y++) {
+			numHalls[y] = 0;
+		}
+
+		//Get the number of halls in Sector
+		int xSector =(int) s.coordinates.x;
+		int ySector = (int)s.coordinates.y;
+		for (int y = 0; y < MAX_TRANSFORM; y++) {
+			for (int x = 0; x < MAX_TRANSFORM; x++) {
+				for (int z = 0; z < MAX_TRANSFORM; z++) {
+					int transform = s.GetMapTransform(x, y, z);
+					if(transform == HALL) {
+						numHalls[y]++; //add number of halls as you progress
+						halls[i] = new Vector3(x, y, z);
+					}
+				}
+			}
+		}
+
+		//TODO: Figure out why it will not connect.
+		//Connect halls on the same level
+		i = 0; //index for current hall	
+		for (int y = 0; y < MAX_TRANSFORM; y++) {
+
+			//While y level has more than 1 hall and current hall is still on same level
+			while ((i < numHalls.Length) && (numHalls[y] > 1) && (y == (int) halls[i].y)) {
+				int placeTile = 0;
+				int lastX = (int) halls[i].x; //Last x place hall was placed
+				int lastZ = (int) halls[i].z; //Last y place hall was placed
+				bool passed = false;
+				int h = 0;  //number of halls placed
+				int maxHalls = 0; //TODO: max number of halls to place before forcing
+
+				int pathX = rand.Next(0, 1); //Multiple traversals to get multiple paths
+				int pathZ = rand.Next(0, 1); //TODO: add for multiple pathing
+				int numPaths = rand.Next(1, 4);				
+
+				for (int x = (int) halls[i].x; x < MAX_TRANSFORM; x++) { //Start from current halls
+					for (int z = (int)halls[i].z; z < MAX_TRANSFORM; z++) {
+
+						if ((x == lastX + 1 ^ z == lastZ + 1) && (y == (int)halls[i++].y)) { //x or z are in pos for placement
+							int distToNextX = (int)halls[i++].x - x;
+							int distToNextZ = (int)halls[i++].z - z;
+							//maxHalls = rand.Next((distToNextX + distToNextZ)/2 - 1, 
+								//distToNextX + distToNextZ);
+
+							if (!passed && distToNextX != 0 && distToNextZ != 0) {
+								placeTile = rand.Next(0, 1); //false or true
+								passed = true;
+							}
+							else if((distToNextX == 0 ^ distToNextZ == 0) || (passed && placeTile == 0)) {
+								placeTile = 1;
+								passed = false;
+							}
+
+							if ((placeTile == 1) && s.GetMapTransform(x, y, z) == EMPTY) { //TODO: add checking for maxHalls: || maxHalls == h
+								s.SetMapTransform(x, y, z, HALL);
+								h++;
+								lastX = x;
+								lastZ = z;
+								if(!passed) {
+									placeTile = 0;
+								}
+							}
+						}
+
+
+					}
+				}	
+				i++; //Done. Move to next hall
+			}
+		}
 	}
 
-	//TODO: Adds rooms connected to hallways
+	//TODO: Adds rooms connected to hallway
 	public void AddRooms(Sector s) {
+
+	}
+
+	//TODO: Adds minable asteroids to the sector
+	public void AddAsteroids(Sector s) {
 
 	}
 
@@ -117,14 +202,16 @@ public class Generation {
 	}
 	//Instantiates the transform of the tile 
 	//TODO: Have objects rotate to allign 
-	//TODO: Avoid instancing empty transforms
 	public void InstanciateSector(int xSector, int ySector) {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
-					Vector3 v = new Vector3(80 * xSector + (5 * x), 5 * y, 80 * ySector + (5 * z));
-					Transform t = tiles[sectors[xSector, ySector].GetMapTransform(x, y, z)];
-					GameObject.Instantiate(t, v, Quaternion.identity);			
+					int transform = sectors[xSector, ySector].GetMapTransform(x, y, z);
+					if(transform != EMPTY) {
+						Vector3 v = new Vector3(80 * xSector + (5 * x), 5 * y, 80 * ySector + (5 * z));
+						Transform t = tiles[transform];
+						GameObject.Instantiate(t, v, Quaternion.identity);
+					}						
 				}
 			}
 		}

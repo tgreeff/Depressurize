@@ -11,9 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: -913181260, guid: 7d3a677691631814c819f6c04b639945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastUpdatedAtString: 2018-03-21T02:52:18.2207101-07:00
-  lastVerifiedAtString: 2018-03-21T02:52:18.3074405-07:00
-  initializedAtString: 2018-03-20T17:10:23.4606600-07:00
+  lastUpdatedAtString: 2018-03-27T12:42:20.1964784-07:00
+  lastVerifiedAtString: 2018-03-27T12:42:20.2521213-07:00
+  initializedAtString: 2018-03-27T12:15:05.0489431-07:00
   gitConfigBranch:
     name: develop
     remote:
@@ -26,6 +26,9 @@ MonoBehaviour:
   - name: develop
     tracking: '[None]'
     isActive: 1
+  - name: generation
+    tracking: '[None]'
+    isActive: 0
   - name: master
     tracking: '[None]'
     isActive: 0
@@ -41,9 +44,14 @@ MonoBehaviour:
   localConfigBranches:
     keys:
     - develop
+    - generation
     - master
     values:
     - name: develop
+      remote:
+        name: 
+        url: 
+    - name: generation
       remote:
         name: 
         url: 
