@@ -282,13 +282,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Depressurize.Plugins.csproj">
-      <Project>{44ACB689-C152-3F94-A9E7-1932A3E42982}</Project>
-      <Name>Depressurize.Plugins</Name>
-    </ProjectReference>
     <ProjectReference Include="Depressurize.csproj">
       <Project>{DB5E5C42-D755-13F7-B5DA-1D15BAA6AEFC}</Project>
       <Name>Depressurize</Name>
+    </ProjectReference>
+    <ProjectReference Include="Depressurize.Plugins.csproj">
+      <Project>{44ACB689-C152-3F94-A9E7-1932A3E42982}</Project>
+      <Name>Depressurize.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +301,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Alien\ALien Info.txt" />
+    <None Include="Assets\README.TXT" />
+    <None Include="Assets\SM.TXT" />
     <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
     <None Include="Assets\Shared Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\Shared Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
@@ -374,6 +376,7 @@
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
+    <None Include="Assets\_Creepy_Cat\_3D Scifi Kit Starter Kit\_Docs\Doc.txt" />
     <None Include="Assets\rpg-tutorial-assets\README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
