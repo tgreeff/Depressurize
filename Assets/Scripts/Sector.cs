@@ -67,6 +67,19 @@ public class Sector{
 		return mapInt[x, y, z];
 	}
 
+	public Vector3 FindFirstInstance(int transform) {
+		for (int x = 0; x < MAX_TRANSFORM; x++) {
+			for(int y= 0; y < MAX_TRANSFORM; y++) {
+				for(int z = 0; z < MAX_TRANSFORM; z++) {
+					if(mapInt[x,y,z] == transform) {
+						return new Vector3(x, y, z);
+					}
+				}
+			}
+		}
+		return new Vector3(0,0,0);
+	}
+
 	//Get number of hall vertexes currently in the sector
 	public int GetNumHallVertex() {
 		return numHallVertex;

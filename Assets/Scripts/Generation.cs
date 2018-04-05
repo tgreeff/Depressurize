@@ -16,6 +16,7 @@ public class Generation {
 	public const int EMPTY = 0;
 	public const int START = 1;
 	public const int HALL = 2;
+	public const int HALL_CORNER = 3;
 
 	// Use this for initialization
 	public Generation(int drawDist, Transform[] b, int sectorX, int sectorY) {
@@ -46,12 +47,13 @@ public class Generation {
 		//setSector(sectors[sectorX, sectorY], sectorX, sectorY, 1); //For testing spawn distance
 
 		//Add spawn
-		tiles[START].position = new Vector3(spawnX, spawnY, spawnZ);
-		tiles[START].rotation = Quaternion.Euler(0, rot * 90, 0);
 		sectors[sectorX, sectorY].SetMapTransform(spawnX, spawnY, spawnZ, START);
+		
 		numTiles++;
 	}
 
+	//TODO: Make it so that some sectors don't generate
+	//TODO: connect between sectors
 	//TODO: Change hall vertexes with corners or other connectors
 	//TODO: Instantiate every time a tile gets picked.
 	//TODO: Add item spawn generation, add player, enemy spawns, and saving the map. 
@@ -62,7 +64,7 @@ public class Generation {
 		}
 		//int t = rand.Next(0, tiles.Length-1); //chosen tile value
 		sectors[xSector, ySector] = new Sector(xSector, ySector);
-		setSector(sectors[xSector, ySector], xSector, ySector, EMPTY);
+		SetSector(sectors[xSector, ySector], xSector, ySector, EMPTY);
 
 		//Add Hallway Crossroads
 		int numVertex = rand.Next(56, 320); //Should be at least 4 on 14 layers.
@@ -110,57 +112,74 @@ public class Generation {
 			}
 		}
 
-		//TODO: Figure out why it will not connect.
 		//Connect halls on the same level
-		i = 0; //index for current hall	
-		for (int y = 0; y < MAX_TRANSFORM; y++) {
+		int lastX = (int)halls[0].x; //Last x place hall was placed
+		int lastZ = (int)halls[0].z; //Last y place hall was placed
+		int hallsPlaced = 0;
+		int pathX; //Multiple traversals to get multiple paths
+		int pathZ; //TODO: add for multiple pathing vertical and horizontal
+		int numPaths = rand.Next(1, 4);
 
-			//While y level has more than 1 hall and current hall is still on same level
-			while ((i < numHalls.Length) && (numHalls[y] > 1) && (y == (int) halls[i].y)) {
-				int placeTile = 0;
-				int lastX = (int) halls[i].x; //Last x place hall was placed
-				int lastZ = (int) halls[i].z; //Last y place hall was placed
-				bool passed = false;
-				int h = 0;  //number of halls placed
-				int maxHalls = 0; //TODO: max number of halls to place before forcing
+		for (int h = 1; h < halls.Length; h++) {
+			while(halls[h].y != halls[h - 1].y && h < halls.Length) {
+				h++;	
+			}
+			if (h >= halls.Length) {
+				break;
+			}
 
-				int pathX = rand.Next(0, 1); //Multiple traversals to get multiple paths
-				int pathZ = rand.Next(0, 1); //TODO: add for multiple pathing
-				int numPaths = rand.Next(1, 4);				
-
-				for (int x = (int) halls[i].x; x < MAX_TRANSFORM; x++) { //Start from current halls
-					for (int z = (int)halls[i].z; z < MAX_TRANSFORM; z++) {
-
-						if ((x == lastX + 1 ^ z == lastZ + 1) && (y == (int)halls[i++].y)) { //x or z are in pos for placement
-							int distToNextX = (int)halls[i++].x - x;
-							int distToNextZ = (int)halls[i++].z - z;
-							//maxHalls = rand.Next((distToNextX + distToNextZ)/2 - 1, 
-								//distToNextX + distToNextZ);
-
-							if (!passed && distToNextX != 0 && distToNextZ != 0) {
-								placeTile = rand.Next(0, 1); //false or true
-								passed = true;
-							}
-							else if((distToNextX == 0 ^ distToNextZ == 0) || (passed && placeTile == 0)) {
-								placeTile = 1;
-								passed = false;
-							}
-
-							if ((placeTile == 1) && s.GetMapTransform(x, y, z) == EMPTY) { //TODO: add checking for maxHalls: || maxHalls == h
-								s.SetMapTransform(x, y, z, HALL);
-								h++;
-								lastX = x;
-								lastZ = z;
-								if(!passed) {
-									placeTile = 0;
-								}
-							}
-						}
-
-
+			pathX = rand.Next(0, 1); //decide if placing path for x
+			pathZ = rand.Next(0, 1); //decide if placing path for z
+			int x = (int)halls[h - 1].x;
+			int z = (int)halls[h - 1].z;
+			bool lastDirectionX = false;
+			bool lastDirectionZ = false;
+			while(x != (int) halls[h].x && z != (int) halls[h].z) {
+				if(x == (int)halls[h].x) { //on the edge
+					//TODO: corners
+					s.SetMapTransform(x, (int)halls[h].y, z, HALL); //set hall
+					z++;
+				}
+				else if(z == (int)halls[h].z) {
+					s.SetMapTransform(x, (int)halls[h].y, z, HALL); //set hall
+					x++;
+				}
+				else if(pathX == 1 && pathZ == 0) { //Add path to x
+					if (lastDirectionX) {
+						s.SetMapTransform(x, (int)halls[h].y, z, HALL); //set hall
 					}
-				}	
-				i++; //Done. Move to next hall
+					else {
+						s.SetMapTransform(x, (int)halls[h].y, z, HALL_CORNER); //set hall corner
+					}
+					x++;
+					lastDirectionX = true;
+					lastDirectionZ = false;
+					hallsPlaced++;
+				}
+				else if(pathX == 0 && pathZ == 1) { //Add path to z
+					if (lastDirectionZ) {
+						s.SetMapTransform(x, (int)halls[h].y, z, HALL); //set hall
+					}
+					else {
+						s.SetMapTransform(x, (int)halls[h].y, z, HALL_CORNER); //set hall corner
+					}
+					z++;
+					lastDirectionX = false;
+					lastDirectionZ = true;
+					hallsPlaced++;
+				}
+				else { //if pathx == pathz
+					if(pathX == 1) {
+						//TODO
+						x++;
+						z++;
+					}
+					else {
+						//TODO
+						x++;
+						z++;
+					}
+				}
 			}
 		}
 	}
@@ -175,8 +194,13 @@ public class Generation {
 
 	}
 
+	//Gets sector based off of index
+	public Sector GetSector(int x, int y) {
+		return sectors[x, y];
+	}
+
 	//Returns the Vec2 of location coordinates
-	public Vector2 GetSector(float x, float y, float z) {
+	public Vector2 GetSectorFromPosition(float x, float y, float z) {
 		int xSector = (int) Math.Floor(x / 80);
 		int ySector = (int) Math.Floor(z / 80);
 		return new Vector2(xSector, ySector);
@@ -191,7 +215,7 @@ public class Generation {
 		return sectors[xSector, ySector].instanciated;
 	}
 
-	public void setSector(Sector s, int xSector, int ySector, int type) {
+	public void SetSector(Sector s, int xSector, int ySector, int type) {
 		for (int x = 0; x < MAX_TRANSFORM; x++) {
 			for (int y = 0; y < MAX_TRANSFORM; y++) {
 				for (int z = 0; z < MAX_TRANSFORM; z++) {
@@ -200,6 +224,7 @@ public class Generation {
 			}
 		}
 	}
+
 	//Instantiates the transform of the tile 
 	//TODO: Have objects rotate to allign 
 	public void InstanciateSector(int xSector, int ySector) {
@@ -208,7 +233,7 @@ public class Generation {
 				for (int z = 0; z < 16; z++) {
 					int transform = sectors[xSector, ySector].GetMapTransform(x, y, z);
 					if(transform != EMPTY) {
-						Vector3 v = new Vector3(80 * xSector + (5 * x), 5 * y, 80 * ySector + (5 * z));
+						Vector3 v = new Vector3(80 * xSector + (4.5f * x), 5 * y, 80 * ySector + (4.5f * z));
 						Transform t = tiles[transform];
 						GameObject.Instantiate(t, v, Quaternion.identity);
 					}						
