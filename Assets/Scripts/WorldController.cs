@@ -8,7 +8,6 @@ public class WorldController : MonoBehaviour {
 	public int currentSectorX;
 	public int currentSectorY;
 	
-
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
 	public float timeLimit;
 	private Generation gen;
@@ -34,12 +33,19 @@ public class WorldController : MonoBehaviour {
 		currentSectorY = sectorY;
 
 		gen = new Generation(drawDistance, blocks, sectorX, sectorY);
-		while(gen.numTiles == 0) {
+		while(gen.numTiles < 10) {
 			sectorX = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
 			sectorY = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
 			gen = new Generation(drawDistance, blocks, sectorX, sectorY);
 		}
 
+		//TODO
+		Vector3 playerPos = gen.GetSector(sectorX, sectorY).FindFirstInstance(Generation.START);
+		if(playerPos != new Vector3(0, 0, 0)) {
+			Player.transform.position = playerPos;
+		}
+		
+		
 		for (int x = -drawDistance; x < drawDistance; x++) {
 			for (int y = -drawDistance; y < drawDistance; y++) {
 				if((sectorX + x >= 0 && sectorX + x < Generation.MAX_SECTOR) && (sectorY + y >= 0 && sectorY + y < Generation.MAX_SECTOR)) {
