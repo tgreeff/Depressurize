@@ -304,6 +304,7 @@
     <Compile Include="Assets\scripts\compassScript.cs" />
     <Compile Include="Assets\scripts\EnemyBox.cs" />
     <Compile Include="Assets\scripts\FlickeringLight.cs" />
+    <Compile Include="Assets\scripts\Health.cs" />
     <Compile Include="Assets\scripts\Patrol.cs" />
     <Compile Include="Assets\scripts\PlayerIO.cs" />
     <Compile Include="Assets\scripts\RaycastShooter.cs" />
