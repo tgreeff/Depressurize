@@ -21,7 +21,18 @@ public class PlayerIO : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector3((Screen.width / 2), (Screen.height / 2), 0)), out hit, Mathf.Infinity))
+        /*
+        if (Input.GetKeyDown("2"))
+        {
+            GameObject.Find("RetAdd").SetActive(false);
+        }
+
+        if (Input.GetKeyDown("1"))
+        {
+            GameObject.Find("RetAdd").SetActive(true);
+        }
+        */
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector3((Screen.width / 2), (Screen.height / 2), 0)), out hit, Mathf.Infinity))
             {
                 retAdd.GetComponent<Renderer>().enabled = true;
                 
@@ -54,7 +65,7 @@ public class PlayerIO : MonoBehaviour {
         }
     }
 
-    
+    /*
     void canBuild()
     {
         if (Input.GetKeyDown("5"))
@@ -63,7 +74,7 @@ public class PlayerIO : MonoBehaviour {
         }
     }
 
-
+    */
 
 
 }
