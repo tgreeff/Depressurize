@@ -7,52 +7,32 @@ public class WorldController : MonoBehaviour {
 	public Transform[] blocks;
 	public int currentSectorX;
 	public int currentSectorY;
-	
+
+	private Generation worldGeneration;
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
-	public float timeLimit;
-	private Generation gen;
-	private float timer;
+	private float timer = 0;
+	private float timeLimit = 30;
+	private int spawnSectorX, spawnSectorY;
 
-	//---World Formation Variables---
-	public int mapSize = Generation.MAX_SECTOR;
-	public int seed;
-
-	public int LimitNumberEnemyFactions, LimitNumberEncounters;
-	private int numEnemyFactions, numEncounters;    //Numbers - this is the number generated for number of landmarks  																								 
-	private Transform[] enemyFactions, encounters;  //Locations - these contain locations for the varying landmarks. Instantciated with the numbers above	
-													
-	//TODO: update player position and sector
 	void Start () {
-		timer = 0;
-		timeLimit = 30;
+		spawnSectorX = currentSectorX = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
+		spawnSectorY = currentSectorY = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
+		worldGeneration = new Generation(drawDistance, blocks, currentSectorX, currentSectorY);
 
-		int sectorX = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
-		int sectorY = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
-
-		currentSectorX = sectorX;
-		currentSectorY = sectorY;
-
-		gen = new Generation(drawDistance, blocks, sectorX, sectorY);
-
-		while(gen.numTiles < 10) {
-			sectorX = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
-			sectorY = Generation.rand.Next(0, Generation.MAX_SECTOR - 1);
-			gen = new Generation(drawDistance, blocks, sectorX, sectorY);
+		float tSize = Generation.TILE_SIZE;
+		int max = Generation.MAX_SECTOR_TRANSFORM;
+		float xPos = (tSize * max) * spawnSectorX + (tSize * worldGeneration.spawnPositionX);
+		float yPos = (tSize * worldGeneration.spawnPositionY);
+		float zPos = (tSize * max) * spawnSectorY + (tSize * worldGeneration.spawnPositionZ);
+		Player.transform.position = new Vector3( xPos, yPos, zPos);
+	
+		if(drawDistance == 0) {
+			drawDistance = 1;
 		}
-
-		//TODO
-		Vector3 playerPos = gen.GetSector(sectorX, sectorY).FindFirstInstance(Generation.START);
-		if(playerPos != new Vector3(0, 0, 0)) {
-			Player.transform.position = playerPos;
-		}
-		
-		
 		for (int x = -drawDistance; x < drawDistance; x++) {
 			for (int y = -drawDistance; y < drawDistance; y++) {
-				if((sectorX + x >= 0 && sectorX + x < Generation.MAX_SECTOR) && (sectorY + y >= 0 && sectorY + y < Generation.MAX_SECTOR)) {
-					gen.GenerateSector(sectorX + x, sectorY + y);
-					gen.InstanciateSector(sectorX + x, sectorY + y);
-				}
+				worldGeneration.GenerateSector(currentSectorX + x, currentSectorY + y);
+				worldGeneration.InstanciateSector(currentSectorX + x, currentSectorY + y);
 			}
 		}
 	}
@@ -64,36 +44,49 @@ public class WorldController : MonoBehaviour {
 		if(timer >= timeLimit) {
 			CheckDrawDistance();
 			UpdateCurrentSector();
+			timer = 0;
 		}
-		
+		else {
+			timer += Time.deltaTime;
+		}
 	}
 
 	private void CheckDrawDistance() {
+		//if z + draw is not generated //TODO - make values 
+		int distYPlus = currentSectorY + drawDistance;
+		int distYMinus = currentSectorY - drawDistance;
+		int distXPlus = currentSectorX + drawDistance;
+		int distXMinus = currentSectorX - drawDistance;
+
 		//if z + draw is not generated
-		if (!gen.IsGenerated(currentSectorX, currentSectorY + drawDistance)) { 
-			gen.GenerateSector(currentSectorX, currentSectorY + drawDistance);
-			gen.InstanciateSector(currentSectorX, currentSectorY + drawDistance);
+		if (!worldGeneration.IsGenerated(currentSectorX, distYPlus)) { 
+			worldGeneration.GenerateSector(currentSectorX, distYPlus);
+			worldGeneration.InstanciateSector(currentSectorX, distYPlus);
 		}
 		//if z - draw is not generated
-		else if (!gen.IsGenerated(currentSectorX, currentSectorY - drawDistance)) {
-			gen.GenerateSector(currentSectorX, currentSectorY - drawDistance);
-			gen.InstanciateSector(currentSectorX, currentSectorY - drawDistance);
+		else if (!worldGeneration.IsGenerated(currentSectorX, distYMinus)) {
+			worldGeneration.GenerateSector(currentSectorX, distYMinus);
+			worldGeneration.InstanciateSector(currentSectorX, distYMinus);
 		}
 		//if x + draw is not generated
-		else if (!gen.IsGenerated(currentSectorX + drawDistance, currentSectorY)) { 
-			gen.GenerateSector(currentSectorX + drawDistance, currentSectorY);
-			gen.InstanciateSector(currentSectorX + drawDistance, currentSectorY);
+		else if (!worldGeneration.IsGenerated(distXPlus, currentSectorY)) { 
+			worldGeneration.GenerateSector(distXPlus, currentSectorY);
+			worldGeneration.InstanciateSector(distXPlus, currentSectorY);
 		}
 		//if x - draw is not generated
-		else if (!gen.IsGenerated(currentSectorX - drawDistance, currentSectorY)) { 
-			gen.GenerateSector(currentSectorX - drawDistance, currentSectorY);
-			gen.InstanciateSector(currentSectorX - drawDistance, currentSectorY);
+		else if (!worldGeneration.IsGenerated(distXMinus, currentSectorY)) { 
+			worldGeneration.GenerateSector(distXMinus, currentSectorY);
+			worldGeneration.InstanciateSector(distXMinus, currentSectorY);
 		}
 	}
 
 	//TODO
 	private void UpdateCurrentSector() {
-		currentSectorX = (int) Player.transform.position.x;
-		currentSectorY = (int) Player.transform.position.z;
+		int x = (int) Player.transform.position.x;
+		int y = (int) Player.transform.position.z;
+		int sectorSize = (int) Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
+
+		currentSectorX = x - (x % sectorSize);
+		currentSectorY = y - (y % sectorSize);
 	}
 }
