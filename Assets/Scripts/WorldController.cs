@@ -29,8 +29,8 @@ public class WorldController : MonoBehaviour {
 		if(drawDistance == 0) {
 			drawDistance = 1;
 		}
-		for (int x = -drawDistance; x < drawDistance; x++) {
-			for (int y = -drawDistance; y < drawDistance; y++) {
+		for (int x = -drawDistance; x <= drawDistance; x++) {
+			for (int y = -drawDistance; y <= drawDistance; y++) {
 				worldGeneration.GenerateSector(currentSectorX + x, currentSectorY + y);
 				worldGeneration.InstanciateSector(currentSectorX + x, currentSectorY + y);
 			}

@@ -20,6 +20,10 @@ public class Generation {
 	public const int HALL_CORNER = 3;
 	public const int HALL_TRI = 4;
 	public const int HALL_QUAD = 5;
+	public const int HALL_DEAD_END = 6;
+	public const int HALL_DOOR_END = 7;
+	public const int HALL_HATCH_DOWN = 8;
+	public const int HALL_LADDER_UP = 9;
 
 	// Use this for initialization
 	public Generation(int drawDist, Transform[] b, int sectorX, int sectorY) {
@@ -102,59 +106,103 @@ public class Generation {
 		//check edge to connect other sectors
 	}
 
+	//TODO: Add Rotations
 	//Creates a hallway path between 2 points in a sector
 	private Vector2 GeneratePath(Sector s, Vector2 from,  int y) {
 		int catchLoop = 0;
 		int numberHalls = rand.Next(20, 50);
-		int type = rand.Next(0, 99);
+		
 		int x = (int) from.x;
 		int z = (int) from.y;
 		int lastX = (int)from.x;
 		int lastZ = (int)from.y;
 		bool movedX = false;
 		bool movedZ = false;
+		int prevTransform = 0;
+		int direction = 0; // 0 = East, 1 = South, 2 = West, 3 = North
 
 		for (int n  = 0; n < numberHalls && catchLoop < 50; n++) {
-			int path = rand.Next(0, 3); //x+, x-, z+, z-
-			
-			switch(path) {
-				case 0: //x++
-					x = ControlCoordinate(++x);
-					break;
-
-				case 1: //x--
-					x = ControlCoordinate(--x);
-					break;
-
-				case 2:  //z++
-					z = ControlCoordinate(++z);					
-					break;
-
-				case 3: //z--
-					z = ControlCoordinate(--z);				
-					break;
+			int path = rand.Next(0, 99);  
+			if (path < 25) {					//x++, east
+				if (x >= MAX_SECTOR_TRANSFORM - 1) {
+					x = MAX_SECTOR_TRANSFORM - 1;
+				}
+				else {
+					x++;
+					direction = 0;
+				}
 			}
-
-			if(s.GetMapTransform(x, y, z) == 0 ) {
+			else if (path >= 25 && path < 50) { //x--, west
+				if (x <= 0) {
+					x = 0;
+				}
+				else {
+					x--;
+					direction = 2;
+				}
+			}
+			else if (path >= 50 && path < 75) { //z++, north
+				if (z >= MAX_SECTOR_TRANSFORM - 1) {
+					z = MAX_SECTOR_TRANSFORM - 1;
+				}
+				else {
+					z++;
+					direction = 3;
+				}			
+			}
+			else if(path >= 75 && path < 100) { //z--, south
+				if (z <= 0) {
+					z = 0;
+				}
+				else {
+					z--;
+					direction = 1;
+				}			
+			}
+			int currentSpot = s.GetMapTransform(x, y, z);
+			if (currentSpot == EMPTY || currentSpot == HALL_DEAD_END) {  //transform not taken up
 				if(lastZ != z && movedX || lastX != x && movedZ) { //last was in other dir
 					s.SetMapTransform(x, y, z, HALL_CORNER);
 				}
 				else if((lastZ != z && movedZ) || (lastX != x && movedX)) { //last was in same dir
-					type = rand.Next(0, 99);
-					if (type < 75) {
+					int type = rand.Next(0, 99);
+					if (type < 50) {
 						s.SetMapTransform(x, y, z, HALL);
+						prevTransform = HALL;
 					}
-					else if(type > 75 && type < 85) {
+					else if (type >= 50 && type < 80) {
+						s.SetMapTransform(x, y, z, HALL_CORNER);
+						prevTransform = HALL_CORNER;
+					}
+					else if(type >= 80 && type < 85) {
 						s.SetMapTransform(x, y, z, HALL_TRI);
+						prevTransform = HALL_TRI;
 					}
-					else if(type > 85 && type < 100) {
+					else if(type >= 85 && type < 90) {
 						s.SetMapTransform(x, y, z, HALL_QUAD);
+						prevTransform = HALL_QUAD;
 					}
-					
+					else if (type >= 90 && type < 95) {
+						s.SetMapTransform(x, y, z, HALL_HATCH_DOWN);
+						prevTransform = HALL_HATCH_DOWN;
+					}
+					else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
+						s.SetMapTransform(x, y, z, HALL_LADDER_UP);
+						prevTransform = HALL_LADDER_UP;
+					}
+					s.SetMapRotation(x, y, z, direction);
 				}
-				else {
+				else if (lastZ != z) {
 					s.SetMapTransform(x, y, z, HALL);
+					s.SetMapRotation(x, y, z, direction);
+					prevTransform = HALL;
 				}
+				else if (lastX != x) {
+					s.SetMapTransform(x, y, z, HALL);
+					s.SetMapRotation(x, y, z, direction);
+					prevTransform = HALL;
+				}
+		
 				catchLoop = 0;
 				if (lastZ != z) { //update after to retain last
 					movedZ = true;
@@ -165,13 +213,44 @@ public class Generation {
 					lastX = x;
 				}
 			}
-			else { //When spot is already taken up
+			else { //When spot is already taken up control when back tracking
+				//Cap open ends
+				if (lastZ > z ) { //z decrease in value
+					int tempZ = ControlCoordinate(++lastZ);
+					if (s.GetMapTransform(x, y, tempZ) == EMPTY) { //keep from placing everywhere
+						s.SetMapTransform(x, y, tempZ, HALL_DEAD_END);
+						s.SetMapRotation(x, y, tempZ, direction);
+					}
+				}
+				else if (lastX > x) { //x decrease in value
+					int tempX = ControlCoordinate(++lastX);
+					if (s.GetMapTransform(tempX, y, z) == EMPTY) {
+						s.SetMapTransform(tempX, y, z, HALL_DEAD_END);
+						s.SetMapRotation(tempX, y, z, direction);
+					}
+				}
+				else if (lastZ < z) { //z increase in value					
+					int tempZ = ControlCoordinate(--lastZ);
+					if (s.GetMapTransform(x, y, tempZ) == EMPTY) {
+						s.SetMapTransform(x, y, tempZ, HALL_DEAD_END);
+						s.SetMapRotation(x, y, tempZ, direction);
+					}					
+				}
+				else if (lastX < x) { //x increase in value
+					int tempX = ControlCoordinate(--lastX);
+					if(s.GetMapTransform(tempX, y, z) == EMPTY) {
+						s.SetMapTransform(tempX, y, z, HALL_DEAD_END);
+						s.SetMapRotation(tempX, y, z, direction);
+					}
+					
+				}
 				numberHalls++;
 				movedX = false;
 				movedZ = false;
 				lastX = x;
 				lastZ = z;
 				catchLoop++;
+				prevTransform = 0;
 			}
 
 		}	
@@ -196,6 +275,10 @@ public class Generation {
 	//TODO: Adds minable asteroids to the sector
 	private void AddAsteroids(Sector s) {
 
+	}
+
+	private void AddItems(Sector s) {
+		
 	}
 
 	//Gets sector based off of index
@@ -236,15 +319,16 @@ public class Generation {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
-					int transform = sectors[xSector, ySector].GetMapTransform(x, y, z);
-					if(transform != EMPTY) {
-						Vector3 v = new Vector3(
-							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * xSector + (TILE_SIZE * x), 
-							TILE_SIZE * y, 
-							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * ySector + (TILE_SIZE * z));
-
-						Transform t = tiles[transform];
-						GameObject.Instantiate(t, v, Quaternion.identity);
+					int transInt = sectors[xSector, ySector].GetMapTransform(x, y, z);
+					if(transInt != EMPTY) {
+						Transform transform = tiles[transInt];
+						Vector3 position = new Vector3(
+							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * xSector + (TILE_SIZE * x) + transform.position.x, 
+							TILE_SIZE * y + transform.position.y, 
+							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * ySector + (TILE_SIZE * z) + transform.position.z);
+						int transRot = sectors[xSector, ySector].GetMapRotation(x, y, z);
+						Quaternion rotation = new Quaternion(0, 90 * transRot, 0, -1);
+						GameObject.Instantiate(transform, position, rotation);
 					}						
 				}
 			}

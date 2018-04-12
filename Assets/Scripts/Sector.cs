@@ -20,6 +20,7 @@ public class Sector{
 		//Needs to be transform to hold the direction to rotate and location
 		//map = new Transform[MAX_TRANSFORM, MAX_TRANSFORM, MAX_TRANSFORM];
 		mapInt = new int[MAX_TRANSFORM, MAX_TRANSFORM, MAX_TRANSFORM];
+		mapRot = new int[MAX_TRANSFORM, MAX_TRANSFORM, MAX_TRANSFORM];
 		coordinates = new Vector2(x, y); //Coords in array
 		generated = false;
 		instanciated = false;
@@ -43,6 +44,15 @@ public class Sector{
 
 	//Get the transform located in the map array
 	public int GetMapTransform(int x, int y, int z) {
+		if (x > MAX_TRANSFORM - 1 || x < 0) {
+			return 0;
+		}
+		if (y > MAX_TRANSFORM - 1 || y < 0) {
+			return 0;
+		}
+		if (z > MAX_TRANSFORM - 1 || z < 0) {
+			return 0;
+		}
 		return mapInt[x, y, z];
 	}
 
@@ -58,11 +68,20 @@ public class Sector{
 			return;
 		}
 
-		mapInt[x, y, z] = type;
+		mapRot[x, y, z] = type;
 	}
 
 	//Get the transform located in the map array
 	public int GetMapRotation(int x, int y, int z) {
+		if (x > MAX_TRANSFORM - 1 || x < 0) {
+			return 0;
+		}
+		if (y > MAX_TRANSFORM - 1 || y < 0) {
+			return 0;
+		}
+		if (z > MAX_TRANSFORM - 1 || z < 0) {
+			return 0;
+		}
 		return mapRot[x, y, z];
 	}
 
