@@ -13,7 +13,7 @@ public class Generation {
 	//-------CONSTANTS/-------
 	public const int MAX_SECTOR = 128;
 	public const int MAX_SECTOR_TRANSFORM = 16;
-	public const float TILE_SIZE = 10f;
+	public const float TILE_SIZE = 10.5f;
 	public const int EMPTY = 0;
 	public const int START = 1;
 	public const int HALL = 2;
@@ -106,7 +106,7 @@ public class Generation {
 		//check edge to connect other sectors
 	}
 
-	//TODO: Add Rotations
+	//TODO: Add Rotations, Make recursive function of this for continuing off of left open areas
 	//Creates a hallway path between 2 points in a sector
 	private Vector2 GeneratePath(Sector s, Vector2 from,  int y) {
 		int catchLoop = 0;
@@ -327,8 +327,12 @@ public class Generation {
 							TILE_SIZE * y + transform.position.y, 
 							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * ySector + (TILE_SIZE * z) + transform.position.z);
 						int transRot = sectors[xSector, ySector].GetMapRotation(x, y, z);
-						Quaternion rotation = new Quaternion(0, 90 * transRot, 0, -1);
+						
+						Quaternion rotation = Quaternion.identity;
+						rotation.eulerAngles = new Vector3(0, 90 * transRot, 0);
 						GameObject.Instantiate(transform, position, rotation);
+
+						
 					}						
 				}
 			}

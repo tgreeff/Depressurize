@@ -29,12 +29,18 @@ public class WorldController : MonoBehaviour {
 		if(drawDistance == 0) {
 			drawDistance = 1;
 		}
+
+		worldGeneration.GenerateSector(currentSectorX, currentSectorY);
+		worldGeneration.InstanciateSector(currentSectorX, currentSectorY);
+
+		/*
 		for (int x = -drawDistance; x <= drawDistance; x++) {
 			for (int y = -drawDistance; y <= drawDistance; y++) {
 				worldGeneration.GenerateSector(currentSectorX + x, currentSectorY + y);
 				worldGeneration.InstanciateSector(currentSectorX + x, currentSectorY + y);
 			}
 		}
+		*/
 	}
 	
 	// Update is called once per frame
