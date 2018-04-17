@@ -9,7 +9,9 @@ public class RayCastShootComplete : MonoBehaviour {
 	public float hitForce = 100f;										// Amount of force which will be added to objects with a rigidbody shot by the player
 	public Transform gunEnd;											// Holds a reference to the gun end object, marking the muzzle location of the gun
 
-	private Camera fpsCam;												// Holds a reference to the first person camera
+    public int ammo = 13;
+
+    private Camera fpsCam;												// Holds a reference to the first person camera
 	private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);	// WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
 	//private AudioSource gunAudio;										// Reference to the audio source which will play our shooting sound effect
 	private LineRenderer laserLine;										// Reference to the LineRenderer component which will display our laserline
@@ -32,8 +34,10 @@ public class RayCastShootComplete : MonoBehaviour {
 	void Update () 
 	{
 		// Check if the player has pressed the fire button and if enough time has elapsed since they last fired
-		if (Input.GetButtonDown("Fire1") && Time.time > nextFire) 
+		if (Input.GetButtonDown("Fire1") && Time.time > nextFire && ammo > 0) 
 		{
+            ammo--;
+
 			// Update the time when our player can fire next
 			nextFire = Time.time + fireRate;
 

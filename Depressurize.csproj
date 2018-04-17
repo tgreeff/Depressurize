@@ -288,6 +288,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\_Scripts\AutoRotate.cs" />
+    <Compile Include="Assets\_Scripts\Bullet.cs" />
+    <Compile Include="Assets\_Scripts\HoloAmmoText.cs" />
+    <Compile Include="Assets\_Scripts\SimpleShoot.cs" />
     <Compile Include="Assets\Let&apos;s Try Shooter\Scripts\CompletedScripts\RayCastShootComplete.cs" />
     <Compile Include="Assets\Let&apos;s Try Shooter\Scripts\CompletedScripts\RayViewerComplete.cs" />
     <Compile Include="Assets\Let&apos;s Try Shooter\Scripts\CompletedScripts\ShootableBox.cs" />
@@ -301,6 +305,7 @@
     <Compile Include="Assets\SampleScenes\Scripts\ParticleSceneControls.cs" />
     <Compile Include="Assets\SampleScenes\Scripts\PlaceTargetWithMouse.cs" />
     <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
+    <Compile Include="Assets\scripts\BuildAmmo.cs" />
     <Compile Include="Assets\scripts\compassScript.cs" />
     <Compile Include="Assets\scripts\EnemyBox.cs" />
     <Compile Include="Assets\scripts\FlickeringLight.cs" />
@@ -308,6 +313,7 @@
     <Compile Include="Assets\scripts\Patrol.cs" />
     <Compile Include="Assets\scripts\PlayerIO.cs" />
     <Compile Include="Assets\scripts\RaycastShooter.cs" />
+    <Compile Include="Assets\scripts\SuitAmmo.cs" />
     <Compile Include="Assets\scripts\timerTwo.cs" />
     <Compile Include="Assets\scripts\UI_Hover.cs" />
     <Compile Include="Assets\scripts\WeaponSwitch.cs" />
@@ -401,6 +407,7 @@
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\Uber.shader" />
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
+    <None Include="Assets\Soniss_Audio\Readme.txt" />
     <None Include="Assets\Standard Assets\Cameras\CameraGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\FirstPersonCharacter\FirstPersonCharacterGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\RollerBall\RollerBallGuidelines.txt" />
