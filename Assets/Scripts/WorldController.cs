@@ -64,6 +64,7 @@ public class WorldController : MonoBehaviour {
 		int distXPlus = currentSectorX + drawDistance;
 		int distXMinus = currentSectorX - drawDistance;
 
+		//TODO check values
 		//if z + draw is not generated
 		if (!worldGeneration.IsGenerated(currentSectorX, distYPlus)) { 
 			worldGeneration.GenerateSector(currentSectorX, distYPlus);

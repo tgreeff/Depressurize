@@ -45,9 +45,9 @@ public class Generation {
 		}
 
 		//Set spawn position
-		spawnPositionX = rand.Next(0, MAX_SECTOR_TRANSFORM - 1);
-		spawnPositionY = rand.Next(0, MAX_SECTOR_TRANSFORM - 1);
-		spawnPositionZ = rand.Next(0, MAX_SECTOR_TRANSFORM - 1);
+		spawnPositionX = rand.Next(2, MAX_SECTOR_TRANSFORM - 3);
+		spawnPositionY = rand.Next(2, MAX_SECTOR_TRANSFORM - 3);
+		spawnPositionZ = rand.Next(2, MAX_SECTOR_TRANSFORM - 3);
 
 		//Generate and Set initial position
 		GenerateSector(sectorX, sectorY);
@@ -87,17 +87,43 @@ public class Generation {
 	//TODO: Add ladders and other rooms with connections
 	//TODO: Add vertical connections
 	private void AddHalls(Sector s, int xPos, int yPos, int zPos) {
-		Vector2[] last = new Vector2[4];
+		Vector2[] last = new Vector2[50];
 
-		Vector2 from = new Vector2(spawnPositionX, spawnPositionZ);
 		int i = 0;
-		for (int x = -1; x < 2; x += 2) { //start from spawn
-			for (int z = -1; z < 2; z += 2) {
-				from = new Vector2(spawnPositionX + x, spawnPositionZ + z);
-				last[i] = GeneratePath(s, from, spawnPositionY);
-				i++;
+		int numPaths = rand.Next(1, 4);
+		int placedPaths = 0;
+		int passes = 0; //rotation value and number of iter
+		for (int x = -1; x < 2; x++) { //start from spawn
+			for (int z = -1; z < 2; z++) {
+				if (x == 0 ^ z == 0 ) {
+					Vector2 from = new Vector2(xPos + x, zPos + z);
+
+					int path = rand.Next(0, 1);
+					if(placedPaths < numPaths && (numPaths - placedPaths) >= (4 - passes)) {
+						path = 1;
+					}
+					else if(placedPaths > numPaths) {
+						path = 0;
+					}
+
+					if (path != 0) { 
+						s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL);
+						last[i] = GeneratePath(s, from, yPos);
+						i++;
+						placedPaths++;
+					} else {
+						s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL_DEAD_END);
+					}
+					passes++;
+				}	
 			}
 		}
+
+		s.SetMapRotation(xPos+1, yPos, zPos, 0);
+		s.SetMapRotation(xPos-1, yPos, zPos, 2);
+		s.SetMapRotation(xPos, yPos, zPos+1, 3);
+		s.SetMapRotation(xPos, yPos, zPos-1, 1);
+
 		for (int y = 0; y < 16; y++) { //Make paths on each layer
 			if(y != spawnPositionY) {
 
@@ -118,79 +144,208 @@ public class Generation {
 		int lastZ = (int)from.y;
 		bool movedX = false;
 		bool movedZ = false;
-		int prevTransform = 0;
+		int prevTransform = s.GetMapTransform((int) from.x, y, (int) from.y);
 		int direction = 0; // 0 = East, 1 = South, 2 = West, 3 = North
 
-		for (int n  = 0; n < numberHalls && catchLoop < 50; n++) {
-			int path = rand.Next(0, 99);  
-			if (path < 25) {					//x++, east
-				if (x >= MAX_SECTOR_TRANSFORM - 1) {
-					x = MAX_SECTOR_TRANSFORM - 1;
+		for (int n  = 0; n < numberHalls && catchLoop < 100; n++) {
+			int path = rand.Next(0, 99); //Calculate direction
+			bool choosePath = true;
+			while(choosePath) {
+				if (prevTransform == HALL) {
+					if (direction == 0) {
+						x++;
+					}
+					else if (direction == 1) {
+						z--;
+					}
+					else if (direction == 2) {
+						x--;
+					}
+					else {
+						z++;
+					}
+					choosePath = false;
 				}
-				else {
-					x++;
-					direction = 0;
+				else if (prevTransform == HALL_CORNER) {
+					direction = direction + 1 % 4;
+					if(direction == 0) {
+						x++;
+					}
+					else if (direction == 1) {
+						z--;
+					}
+					else if(direction == 2) {
+						x--;
+					}
+					else {
+						z++;
+					}
+					choosePath = false;
 				}
-			}
-			else if (path >= 25 && path < 50) { //x--, west
-				if (x <= 0) {
-					x = 0;
+				else if(prevTransform == HALL_TRI) {
+					int r = rand.Next(0, 1);
+					if(r == 0) { // Right
+						direction = direction + 1 % 4;
+					}
+					else { //Left
+						direction--;
+						if(direction < 0) {
+							direction = 3;
+						}
+					}
+					if (direction == 0) {
+						x++;
+					}
+					else if (direction == 1) {
+						z--;
+					}
+					else if (direction == 2) {
+						x--;
+					}
+					else {
+						z++;
+					}
+					choosePath = false;
 				}
-				else {
-					x--;
-					direction = 2;
+				else if(prevTransform == HALL_QUAD) {
+					int r = rand.Next(0, 2);
+					if (r == 0) { //Right
+						direction = direction + 1 % 4;
+					}
+					else if (r == 1) { //Straight
+						
+					}
+					else { //Left
+						direction--;
+						if (direction < 0) {
+							direction = 3;
+						}
+					}
+					if (direction == 0) {
+						x++;
+					}
+					else if (direction == 1) {
+						z--;
+					}
+					else if (direction == 2) {
+						x--;
+					}
+					else {
+						z++;
+					}
+					choosePath = false;
 				}
-			}
-			else if (path >= 50 && path < 75) { //z++, north
-				if (z >= MAX_SECTOR_TRANSFORM - 1) {
-					z = MAX_SECTOR_TRANSFORM - 1;
+				else if(prevTransform == HALL_HATCH_DOWN) {
+
+					choosePath = false;
 				}
-				else {
-					z++;
-					direction = 3;
-				}			
-			}
-			else if(path >= 75 && path < 100) { //z--, south
-				if (z <= 0) {
-					z = 0;
+				else if (prevTransform == HALL_LADDER_UP) {
+
+					choosePath = false;
 				}
-				else {
-					z--;
-					direction = 1;
-				}			
+				else if (path < 25) {					//x++, east
+					if(lastX < x) { //prevent backtracking
+						continue;
+					}
+					else {
+						if (x >= MAX_SECTOR_TRANSFORM - 1) {
+							x = MAX_SECTOR_TRANSFORM - 1;
+						}
+						else {
+							x++;
+							direction = 0;
+						}
+						choosePath = false;
+					}
+				}
+				else if (path >= 25 && path < 50) { //x--, west
+					if (lastX > x) { //prevent backtracking
+						continue;
+					}
+					else {
+						if (x <= 0) {
+							x = 0;
+						}
+						else {
+							x--;
+							direction = 2;
+						}
+						choosePath = false;
+					}
+				}
+				else if (path >= 50 && path < 75) { //z++, north
+					if (lastZ < z) { //prevent backtracking
+						continue;
+					}
+					else {
+						if (z >= MAX_SECTOR_TRANSFORM - 1) {
+							z = MAX_SECTOR_TRANSFORM - 1;
+						}
+						else {
+							z++;
+							direction = 3;
+						}
+						choosePath = false;
+					}			
+				}
+				else if(path >= 75 && path < 100) { //z--, south
+					if (lastZ > z) { //prevent backtracking
+						continue;
+					}
+					else {
+						if (z <= 0) {
+							z = 0;
+						}
+						else {
+							z--;
+							direction = 1;
+						}
+						choosePath = false;
+					}			
+				}
 			}
 			int currentSpot = s.GetMapTransform(x, y, z);
 			if (currentSpot == EMPTY || currentSpot == HALL_DEAD_END) {  //transform not taken up
 				if(lastZ != z && movedX || lastX != x && movedZ) { //last was in other dir
 					s.SetMapTransform(x, y, z, HALL_CORNER);
+					prevTransform = HALL_CORNER;
 				}
-				else if((lastZ != z && movedZ) || (lastX != x && movedX)) { //last was in same dir
-					int type = rand.Next(0, 99);
-					if (type < 50) {
-						s.SetMapTransform(x, y, z, HALL);
-						prevTransform = HALL;
+				if((lastZ != z && movedZ) || (lastX != x && movedX)) { //last was in same dir
+					bool chooseTile = true;
+					while(chooseTile) {
+						int type = rand.Next(0, 99);
+						if (type < 20) {
+							s.SetMapTransform(x, y, z, HALL);
+							prevTransform = HALL;
+							chooseTile = false;
+						}
+						else if (type >= 20 && type < 50) {
+							s.SetMapTransform(x, y, z, HALL_CORNER);
+							prevTransform = HALL_CORNER;
+							chooseTile = false;
+						}
+						else if(type >= 50 && type < 75) {
+							s.SetMapTransform(x, y, z, HALL_TRI);
+							prevTransform = HALL_TRI;
+							chooseTile = false;
+						}
+						else if(type >= 85 && type < 90) {
+							s.SetMapTransform(x, y, z, HALL_QUAD);
+							prevTransform = HALL_QUAD;
+							chooseTile = false;
+						}
+						else if (type >= 85 && type < 95 && prevTransform != HALL_HATCH_DOWN) {
+							s.SetMapTransform(x, y, z, HALL_HATCH_DOWN);
+							prevTransform = HALL_HATCH_DOWN;
+							chooseTile = false;
+						}
+						else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
+							s.SetMapTransform(x, y, z, HALL_LADDER_UP);
+							prevTransform = HALL_LADDER_UP;
+							chooseTile = false;
+						}
+						s.SetMapRotation(x, y, z, direction);
 					}
-					else if (type >= 50 && type < 80) {
-						s.SetMapTransform(x, y, z, HALL_CORNER);
-						prevTransform = HALL_CORNER;
-					}
-					else if(type >= 80 && type < 85) {
-						s.SetMapTransform(x, y, z, HALL_TRI);
-						prevTransform = HALL_TRI;
-					}
-					else if(type >= 85 && type < 90) {
-						s.SetMapTransform(x, y, z, HALL_QUAD);
-						prevTransform = HALL_QUAD;
-					}
-					else if (type >= 90 && type < 95) {
-						s.SetMapTransform(x, y, z, HALL_HATCH_DOWN);
-						prevTransform = HALL_HATCH_DOWN;
-					}
-					else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
-						s.SetMapTransform(x, y, z, HALL_LADDER_UP);
-						prevTransform = HALL_LADDER_UP;
-					}
-					s.SetMapRotation(x, y, z, direction);
 				}
 				else if (lastZ != z) {
 					s.SetMapTransform(x, y, z, HALL);
@@ -213,44 +368,14 @@ public class Generation {
 					lastX = x;
 				}
 			}
-			else { //When spot is already taken up control when back tracking
-				//Cap open ends
-				if (lastZ > z ) { //z decrease in value
-					int tempZ = ControlCoordinate(++lastZ);
-					if (s.GetMapTransform(x, y, tempZ) == EMPTY) { //keep from placing everywhere
-						s.SetMapTransform(x, y, tempZ, HALL_DEAD_END);
-						s.SetMapRotation(x, y, tempZ, direction);
-					}
-				}
-				else if (lastX > x) { //x decrease in value
-					int tempX = ControlCoordinate(++lastX);
-					if (s.GetMapTransform(tempX, y, z) == EMPTY) {
-						s.SetMapTransform(tempX, y, z, HALL_DEAD_END);
-						s.SetMapRotation(tempX, y, z, direction);
-					}
-				}
-				else if (lastZ < z) { //z increase in value					
-					int tempZ = ControlCoordinate(--lastZ);
-					if (s.GetMapTransform(x, y, tempZ) == EMPTY) {
-						s.SetMapTransform(x, y, tempZ, HALL_DEAD_END);
-						s.SetMapRotation(x, y, tempZ, direction);
-					}					
-				}
-				else if (lastX < x) { //x increase in value
-					int tempX = ControlCoordinate(--lastX);
-					if(s.GetMapTransform(tempX, y, z) == EMPTY) {
-						s.SetMapTransform(tempX, y, z, HALL_DEAD_END);
-						s.SetMapRotation(tempX, y, z, direction);
-					}
-					
-				}
+			else { //When spot is already taken up control when back tracking				
 				numberHalls++;
 				movedX = false;
 				movedZ = false;
 				lastX = x;
 				lastZ = z;
 				catchLoop++;
-				prevTransform = 0;
+				prevTransform = EMPTY;
 			}
 
 		}	
@@ -279,6 +404,29 @@ public class Generation {
 
 	private void AddItems(Sector s) {
 		
+	}
+
+	//Check if next to spawn
+	private bool CheckForSpawn(Sector s, int x, int y, int z) {
+		bool xP = false;
+		bool xN = false;
+		bool zP = false;
+		bool zN = false;
+
+		if (x < MAX_SECTOR_TRANSFORM-1) {
+			xP = s.GetMapTransform(x + 1, y, z) == START;
+		}
+		if (x > 0) {
+			xN = s.GetMapTransform(x - 1, y, z) == START;
+		}
+		if (z < MAX_SECTOR_TRANSFORM-1) {
+			zP = s.GetMapTransform(x, y, z+1) == START;
+		}
+		if (z > 0) {
+			zN = s.GetMapTransform(x, y, z - 1) == START;
+		}
+
+		return xP || xN || zP || zN;
 	}
 
 	//Gets sector based off of index
