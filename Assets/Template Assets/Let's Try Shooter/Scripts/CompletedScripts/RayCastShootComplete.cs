@@ -9,14 +9,17 @@ public class RayCastShootComplete : MonoBehaviour {
 	public float hitForce = 100f;										// Amount of force which will be added to objects with a rigidbody shot by the player
 	public Transform gunEnd;											// Holds a reference to the gun end object, marking the muzzle location of the gun
 
-	private Camera fpsCam;												// Holds a reference to the first person camera
+    public int ammo = 13;
+
+    private Camera fpsCam;												// Holds a reference to the first person camera
 	private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);	// WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
 	//private AudioSource gunAudio;										// Reference to the audio source which will play our shooting sound effect
 	private LineRenderer laserLine;										// Reference to the LineRenderer component which will display our laserline
 	private float nextFire;												// Float to store the time the player will be allowed to fire again, after firing
+    AudioSource audio;                                                  // audio to play the sound for when the player fires the weapon 
 
 
-	void Start () 
+    void Start () 
 	{
 		// Get and store a reference to our LineRenderer component
 		laserLine = GetComponent<LineRenderer>();
@@ -26,16 +29,24 @@ public class RayCastShootComplete : MonoBehaviour {
 
 		// Get and store a reference to our Camera by searching this GameObject and its parents
 		fpsCam = GetComponentInParent<Camera>();
-	}
+
+       
+        audio = GetComponent<AudioSource>();
+        
+        
+    }
 	
 
 	void Update () 
 	{
 		// Check if the player has pressed the fire button and if enough time has elapsed since they last fired
-		if (Input.GetButtonDown("Fire1") && Time.time > nextFire) 
+		if (Input.GetButtonDown("Fire1") && Time.time > nextFire && ammo > 0) 
 		{
-			// Update the time when our player can fire next
-			nextFire = Time.time + fireRate;
+            ammo--;
+            audio.Play();
+            audio.Play(44100);
+            // Update the time when our player can fire next
+            nextFire = Time.time + fireRate;
 
 			// Start our ShotEffect coroutine to turn our laser line on and off
             StartCoroutine (ShotEffect());

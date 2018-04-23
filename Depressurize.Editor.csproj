@@ -381,6 +381,7 @@
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\Tonemapping.cginc" />
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\Uber.shader" />
     <None Include="Assets\Shared Assets\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
+    <None Include="Assets\Soniss_Audio\Readme.txt" />
     <None Include="Assets\Standard Assets\Cameras\CameraGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\FirstPersonCharacter\FirstPersonCharacterGuidelines.txt" />
     <None Include="Assets\Standard Assets\Characters\RollerBall\RollerBallGuidelines.txt" />

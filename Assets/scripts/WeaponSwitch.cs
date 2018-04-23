@@ -8,6 +8,8 @@ public class WeaponSwitch : MonoBehaviour {
     public GameObject myBox;
     public GameObject myGun;
 
+
+
     // Use this for initialization
     void Start () {
 		
