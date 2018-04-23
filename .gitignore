@@ -1,5 +1,10 @@
 Temp/
+Assets/Plugins/
 Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
+obj/
+.vs/
+
+*.csproj
