@@ -16,9 +16,10 @@ public class RayCastShootComplete : MonoBehaviour {
 	//private AudioSource gunAudio;										// Reference to the audio source which will play our shooting sound effect
 	private LineRenderer laserLine;										// Reference to the LineRenderer component which will display our laserline
 	private float nextFire;												// Float to store the time the player will be allowed to fire again, after firing
+    AudioSource audio;                                                  // audio to play the sound for when the player fires the weapon 
 
 
-	void Start () 
+    void Start () 
 	{
 		// Get and store a reference to our LineRenderer component
 		laserLine = GetComponent<LineRenderer>();
@@ -28,7 +29,12 @@ public class RayCastShootComplete : MonoBehaviour {
 
 		// Get and store a reference to our Camera by searching this GameObject and its parents
 		fpsCam = GetComponentInParent<Camera>();
-	}
+
+       
+        audio = GetComponent<AudioSource>();
+        
+        
+    }
 	
 
 	void Update () 
@@ -37,9 +43,10 @@ public class RayCastShootComplete : MonoBehaviour {
 		if (Input.GetButtonDown("Fire1") && Time.time > nextFire && ammo > 0) 
 		{
             ammo--;
-
-			// Update the time when our player can fire next
-			nextFire = Time.time + fireRate;
+            audio.Play();
+            audio.Play(44100);
+            // Update the time when our player can fire next
+            nextFire = Time.time + fireRate;
 
 			// Start our ShotEffect coroutine to turn our laser line on and off
             StartCoroutine (ShotEffect());
