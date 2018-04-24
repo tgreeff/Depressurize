@@ -6,7 +6,7 @@ var rotationSpeed = 3; //speed of turning
 var attackThreshold = 3; // distance within which to attack
 var chaseThreshold = 10; // distance within which to start chasing
 var giveUpThreshold = 20; // distance beyond which AI gives up
-var attackRepeatTime = 1; // delay between attacks when within range
+var attackRepeatTime = 0; // delay between attacks when within range
 
 private var attackTime = 0.0f;
 private var chasing = false;
