@@ -380,6 +380,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Alien\ALien Info.txt" />
+    <None Include="Assets\Plugins\GitHub\Editor\CREDITS.txt" />
+    <None Include="Assets\Plugins\GitHub\Editor\EULA.txt" />
     <None Include="Assets\README.TXT" />
     <None Include="Assets\SM.TXT" />
     <None Include="Assets\SampleScenes\Shaders\Skybox-Procedural.shader" />
@@ -439,7 +441,9 @@
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLit.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLitOutline.shader" />
+    <None Include="Assets\Standard Assets\Environment\Water (Basic)\DO_NOT_WORK_IN_VR.txt" />
     <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />
+    <None Include="Assets\Standard Assets\Environment\Water\DO_NOT_WORK_IN_VR.txt" />
     <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Advanced.shader" />
     <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
