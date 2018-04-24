@@ -10,10 +10,11 @@ public class WeaponSwitch : MonoBehaviour {
 
 
 
+
     // Use this for initialization
     void Start () {
-		
-	}
+      
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -26,14 +27,29 @@ public class WeaponSwitch : MonoBehaviour {
 
         if (Input.GetKeyDown("1"))
         {
-            myGun.SetActive(false);
+            
             myBox.SetActive(true);
             GetComponent<PlayerIO>().enabled = true;
         }
 
-        if (Input.GetKeyDown("3"))
+    
+
+    }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ammo"))
         {
-            myGun.SetActive(true);
+            other.gameObject.SetActive(false);
+            GetComponent<PlayerIO>().numBlocks += 10;
+            myGun.GetComponent<RayCastShootComplete>().ammo += 10;
+        }
+
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            other.gameObject.SetActive(false);
+            GetComponent<PlayerIO>().numBlocks += 10;
         }
 
     }

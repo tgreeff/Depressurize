@@ -9,6 +9,7 @@ public class ShootableBox : MonoBehaviour {
 
     int alienDamage = 1;
 
+    public GameObject drop;
 
     public void Damage(int damageAmount)
 	{
@@ -18,8 +19,14 @@ public class ShootableBox : MonoBehaviour {
 		//Check if health has fallen below zero
 		if (currentHealth <= 0) 
 		{
-			//if health has fallen below zero, deactivate it 
-			gameObject.SetActive (false);
+            
+
+            //if health has fallen below zero, deactivate it 
+            gameObject.SetActive(false);
+
+            Instantiate(drop, transform.position, transform.rotation);
+            drop.SetActive(true);
+
 		}
 	}
 
@@ -48,3 +55,10 @@ public class ShootableBox : MonoBehaviour {
 	
 
 }
+
+
+
+
+
+
+

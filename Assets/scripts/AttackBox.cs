@@ -19,4 +19,13 @@ public class AttackBox : MonoBehaviour {
             gameObject.SetActive(false);
         }
     }
+
+    private void OnCollisionEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Shootable"))
+        {
+            Debug.Log("There was a hit :" + currentHealth);
+            Damage(1);
+        }
+    }
 }

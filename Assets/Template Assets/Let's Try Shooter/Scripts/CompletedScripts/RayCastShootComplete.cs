@@ -91,8 +91,10 @@ public class RayCastShootComplete : MonoBehaviour {
 		}
 	}
 
+    
 
-	private IEnumerator ShotEffect()
+
+    private IEnumerator ShotEffect()
 	{
 		// Play the shooting sound effect
 		//gunAudio.Play ();
