@@ -4,7 +4,9 @@ using UnityEngine;
 public class Generation {
 	public static System.Random rand = new System.Random();
 	public Transform[] tiles;
-			
+
+	public EnemySpawning enemySpawner;
+
 	Sector[,] sectors;
 	public int spawnPositionX, spawnPositionY, spawnPositionZ;
 	public int numTiles = 0;
@@ -26,7 +28,7 @@ public class Generation {
 	public const int HALL_LADDER_UP = 9;
 
 	// Use this for initialization
-	public Generation(int drawDist, Transform[] b, int sectorX, int sectorY) {
+	public Generation(int drawDist, Transform[] b, Transform[] e, int sectorX, int sectorY) {
 		//Copy Tile table
 		tiles = new Transform[b.Length];
 		for (int x = 0; x < b.Length; x++) {
@@ -53,6 +55,7 @@ public class Generation {
 		GenerateSector(sectorX, sectorY);
 		sectors[sectorX, sectorY].SetMapTransform(spawnPositionX, spawnPositionY, spawnPositionZ, START);
 		numTiles++;
+		enemySpawner = new EnemySpawning(e);
 	}
 
 	//TODO: Make it so that some sectors don't generate
@@ -406,6 +409,11 @@ public class Generation {
 		
 	}
 
+	public void SpawnEnemies(int sectorX, int sectorY) {
+		int type = rand.Next(1, EnemySpawning.ENEMY_PREFAB_COUNT);
+		int count = rand.Next(1, 5);
+		enemySpawner.SpawnEnemies(sectors[sectorX,sectorY], type, count);
+	}
 	//Check if next to spawn
 	private bool CheckForSpawn(Sector s, int x, int y, int z) {
 		bool xP = false;
@@ -462,7 +470,6 @@ public class Generation {
 	}
 
 	//Instantiates the transform of the tile 
-	//TODO: Have objects rotate to allign 
 	public void InstanciateSector(int xSector, int ySector) {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
