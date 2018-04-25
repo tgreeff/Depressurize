@@ -5,8 +5,11 @@ using UnityEngine;
 public class WorldController : MonoBehaviour {
 	public GameObject Player;
 	public Transform[] blocks;
+	public Transform[] enemies;
 	public int currentSectorX;
 	public int currentSectorY;
+	public int currentBlockX;
+	public int currentBlockY;
 
 	private Generation worldGeneration;
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
@@ -17,7 +20,7 @@ public class WorldController : MonoBehaviour {
 	void Start () {
 		spawnSectorX = currentSectorX = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
 		spawnSectorY = currentSectorY = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
-		worldGeneration = new Generation(drawDistance, blocks, currentSectorX, currentSectorY);
+		worldGeneration = new Generation(drawDistance, blocks, enemies, currentSectorX, currentSectorY);
 
 		float tSize = Generation.TILE_SIZE;
 		int max = Generation.MAX_SECTOR_TRANSFORM;
@@ -51,6 +54,9 @@ public class WorldController : MonoBehaviour {
 			CheckDrawDistance();
 			UpdateCurrentSector();
 			timer = 0;
+		}
+		else if(timer >= 5 && timer != timeLimit) {
+			worldGeneration.SpawnEnemies(currentSectorX, currentSectorY);
 		}
 		else {
 			timer += Time.deltaTime;
