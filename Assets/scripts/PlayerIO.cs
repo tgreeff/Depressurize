@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class PlayerIO : MonoBehaviour {
@@ -9,6 +10,7 @@ public class PlayerIO : MonoBehaviour {
     int maxBuild;
     Transform retAdd;
     Transform retDelete;
+    public int numBlocks;
 
     private bool isTrue = false;
 
@@ -48,8 +50,9 @@ public class PlayerIO : MonoBehaviour {
                 {
                     retDelete.GetComponent<Renderer>().enabled = false;
                 }
-                if (Input.GetKeyDown("5"))//GetMouseButtonDown(1))
+                if (Input.GetKeyDown("5") && numBlocks > 0)//GetMouseButtonDown(1))
                 {
+                    numBlocks--;
                     GameObject block = (GameObject)Instantiate(Resources.Load("Box"), retAdd.transform.position, Quaternion.identity);
                 }
 

@@ -5,8 +5,13 @@ public class ShootableBox : MonoBehaviour {
 
 	//The box's current health point total
 	public int currentHealth = 3;
+    AttackBox health;
 
-	public void Damage(int damageAmount)
+    int alienDamage = 1;
+
+    public GameObject drop;
+
+    public void Damage(int damageAmount)
 	{
 		//subtract damage amount when Damage function is called
 		currentHealth -= damageAmount;
@@ -14,8 +19,46 @@ public class ShootableBox : MonoBehaviour {
 		//Check if health has fallen below zero
 		if (currentHealth <= 0) 
 		{
-			//if health has fallen below zero, deactivate it 
-			gameObject.SetActive (false);
+            
+
+            //if health has fallen below zero, deactivate it 
+            gameObject.SetActive(false);
+
+            Instantiate(drop, transform.position, transform.rotation);
+            drop.SetActive(true);
+
 		}
 	}
+
+    void Update()
+    {
+
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Shootable")
+        { 
+            Debug.Log("HIT");
+            health = collision.gameObject.GetComponent<AttackBox>();
+        
+            if (health != null)
+            {
+                Debug.Log("Blah");
+                // Call the damage function of that script, passing in our gunDamage variable
+                health.Damage(alienDamage);
+            }
+            
+        }
+    }
+    
+	
+
 }
+
+
+
+
+
+
+
