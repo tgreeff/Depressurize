@@ -51,35 +51,35 @@ public class ShootableBox : MonoBehaviour {
 
 
             // ammo
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 10 && dropNum >= 0)
             {
                 Instantiate(drop, transform.position, transform.rotation);
                 drop.SetActive(true);
             }
 
             // water
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 20 && dropNum >= 10)
             {
                 Instantiate(water, transform.position, transform.rotation);
                 water.SetActive(true);
             }
 
             // air
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 30 && dropNum >= 20)
             {
                 Instantiate(air, transform.position, transform.rotation);
                 air.SetActive(true);
             }
 
             // health
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 40 && dropNum >= 30)
             {
                 Instantiate(healthDrop, transform.position, transform.rotation);
                 healthDrop.SetActive(true);
             }
 
             // coins
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 50 && dropNum >= 40)
             {
                 Instantiate(coins, transform.position, transform.rotation);
                 coins.SetActive(true);
@@ -87,7 +87,7 @@ public class ShootableBox : MonoBehaviour {
 
 
             // ash
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum < 60 && dropNum >= 50)
             {
                 Instantiate(ash, transform.position, transform.rotation);
                 ash.SetActive(true);
@@ -107,7 +107,7 @@ public class ShootableBox : MonoBehaviour {
 
     int roll()
     {
-        num = Random.Range(0, 30);
+        num = Random.Range(0, 60);
         return num;
 
     }
