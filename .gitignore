@@ -1,5 +1,8 @@
 Temp/
 Assets/Plugins/
+Assets/Materials.meta
+Assets/Prefabs.meta
+Assets/Scripts.meta
 Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
