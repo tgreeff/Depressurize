@@ -119,11 +119,12 @@ public class ShootableBox : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag == "Shootable")
-        { 
+        if (collision.collider.tag == "Block")
+        {
+            /*
             Debug.Log("HIT");
             health = collision.gameObject.GetComponent<AttackBox>();
-        
+            collision.gameObject.GetComponent<AttackBox>().Damage(1);
             if (health != null)
             {
                 Debug.Log("Blah");
@@ -132,9 +133,10 @@ public class ShootableBox : MonoBehaviour {
             }
             
         }
+        */
+        }
+
     }
-    
-	
 
 }
 

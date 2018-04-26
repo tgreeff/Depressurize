@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Water : MonoBehaviour {
 
@@ -22,6 +23,11 @@ public class Water : MonoBehaviour {
 
         // make function to check for npc attack to deal damage to player 
 
+        if (time < 0.0)
+        {
+            toDeath();
+        }
+
         if (time > 1)
         {
             time -= Time.deltaTime;
@@ -31,5 +37,10 @@ public class Water : MonoBehaviour {
         fillImg.fillAmount = time / timeAmt;
     }
 
- 
+    void toDeath()
+    {
+        SceneManager.LoadScene("Die");
+    }
+
+
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Air : MonoBehaviour {
 
@@ -23,6 +24,11 @@ public class Air : MonoBehaviour {
 
         // make function to check for npc attack to deal damage to player 
 
+        if (time < 0.0)
+        {
+            toDeath();
+        }
+
         if (time > 1)
         {
             time -= Time.deltaTime;
@@ -32,5 +38,9 @@ public class Air : MonoBehaviour {
         fillImg.fillAmount = time / timeAmt;
     }
 
- 
+    void toDeath()
+    {
+        SceneManager.LoadScene("Die");
+    }
+
 }

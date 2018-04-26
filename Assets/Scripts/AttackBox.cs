@@ -19,7 +19,7 @@ public class AttackBox : MonoBehaviour {
             gameObject.SetActive(false);
         }
     }
-
+    /*
     private void OnCollisionEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Shootable"))
@@ -28,4 +28,35 @@ public class AttackBox : MonoBehaviour {
             Damage(1);
         }
     }
+    */
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Shootable")
+        {
+            Damage(1);
+            Debug.Log("There was a hit :" + currentHealth);
+           
+        }
+
+        if (collision.collider.tag == "Shootable")
+        {
+
+            Damage(1);
+            Debug.Log("Blah");
+
+
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Shootable")
+        {
+            Damage(1);
+            Debug.Log("There was a hit :" + currentHealth);
+            
+        }
+    }
+
+    
 }
