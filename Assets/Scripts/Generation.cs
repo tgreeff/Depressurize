@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Generation {
@@ -89,6 +91,7 @@ public class Generation {
 	//Add special cases as the tiles are added
 	//TODO: Add ladders and other rooms with connections
 	//TODO: Add vertical connections
+	//TODO: Add coroutines
 	private void AddHalls(Sector s, int xPos, int yPos, int zPos) {
 		Vector2[] last = new Vector2[50];
 
@@ -118,7 +121,8 @@ public class Generation {
 						s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL_DEAD_END);
 					}
 					passes++;
-				}	
+				}
+				//yield return null;	
 			}
 		}
 
@@ -396,17 +400,17 @@ public class Generation {
 	}
 
 	//TODO: Adds rooms connected to hallway
-	private void AddRooms(Sector s) {
-
+	private IEnumerator AddRooms(Sector s) {
+		yield return null;
 	}
 
 	//TODO: Adds minable asteroids to the sector
-	private void AddAsteroids(Sector s) {
-
+	private IEnumerator AddAsteroids(Sector s) {
+		yield return null;
 	}
 
-	private void AddItems(Sector s) {
-		
+	private IEnumerator AddItems(Sector s) {
+		yield return null;
 	}
 
 	public void SpawnEnemies(int sectorX, int sectorY) {
@@ -470,6 +474,7 @@ public class Generation {
 	}
 
 	//Instantiates the transform of the tile 
+	//TODO: Add coroutines
 	public void InstanciateSector(int xSector, int ySector) {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
@@ -485,10 +490,9 @@ public class Generation {
 						
 						Quaternion rotation = Quaternion.identity;
 						rotation.eulerAngles = new Vector3(0, 90 * transRot, 0);
-						GameObject.Instantiate(transform, position, rotation);
-
-						
-					}						
+						GameObject.Instantiate(transform, position, rotation);	
+					}
+					//yield return null;
 				}
 			}
 		}

@@ -13,7 +13,7 @@ public class WeaponSwitch : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-      
+		myBox.SetActive(false);
     }
 	
 	// Update is called once per frame

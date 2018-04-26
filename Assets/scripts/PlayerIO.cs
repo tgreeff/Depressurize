@@ -8,16 +8,22 @@ public class PlayerIO : MonoBehaviour {
 
     RaycastHit hit;
     int maxBuild;
-    Transform retAdd;
-    Transform retDelete;
+    public Transform retAdd;
+    public Transform retDelete;
     public int numBlocks;
 
     private bool isTrue = false;
 
     // Use this for initialization
     void Start () {
-        retAdd = GameObject.Find("RetAdd").transform;
-        retDelete = GameObject.Find("RetDelete").transform;
+		if(retAdd == null) {
+			retAdd = GameObject.Find("RetAdd").transform;
+		}
+        
+		if(retDelete == null) {
+			retDelete = GameObject.Find("RetDelete").transform;
+		}
+        
     }
 
     // Update is called once per frame
