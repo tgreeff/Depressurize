@@ -1,8 +1,8 @@
 WindowsStandalone
 SceneListBegin?
-Assets/Scenes/Die.unity
-Assets/Scenes/UI_playground.unity
 Assets/Scenes/MainMenu.unity
+Assets/Scenes/UI_playground.unity
+Assets/Scenes/Die.unity
 SceneListEnd?
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.LevelReset
 f9fc1733277edc923f428a5c7f567223 Assembly-CSharp.dll:.BuildAmmo
