@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldController : MonoBehaviour {
-	public GameObject Player;
+	public GameObject player;
 	public Transform[] blocks;
 	public Transform[] enemies;
 	public int currentSectorX;
 	public int currentSectorY;
 	public int currentBlockX;
 	public int currentBlockY;
+	public int currentBlockZ;
 
 	private Generation worldGeneration;
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
@@ -31,7 +32,7 @@ public class WorldController : MonoBehaviour {
 		float xPos = (tSize * max) * spawnSectorX + (tSize * worldGeneration.spawnPositionX);
 		float yPos = (Generation.TILE_HEIGHT * worldGeneration.spawnPositionY);
 		float zPos = (tSize * max) * spawnSectorY + (tSize * worldGeneration.spawnPositionZ);
-		Player.transform.position = new Vector3( xPos, yPos+1, zPos);
+		player.transform.position = new Vector3( xPos, yPos+1, zPos);
 	
 		if(drawDistance == 0) {
 			drawDistance = 1;
@@ -60,7 +61,8 @@ public class WorldController : MonoBehaviour {
 			timer = 0;
 		}
 		else if(timer >= 5 && timer != timeLimit) {
-			worldGeneration.SpawnEnemies(currentSectorX, currentSectorY);
+			UpdatePlayerPosition();
+			worldGeneration.SpawnEnemies(currentSectorX, currentSectorY, currentBlockX, currentBlockY, currentBlockZ);
 		}
 		else {
 			timer += Time.deltaTime;
@@ -98,11 +100,26 @@ public class WorldController : MonoBehaviour {
 	}
 
 	private void UpdateCurrentSector() {
-		float x = Player.transform.position.x;
-		float y = Player.transform.position.z;
+		float x = player.transform.position.x;
+		float y = player.transform.position.z;
 		float sectorSize = Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
 
 		currentSectorX = (int) Mathf.Floor(x / sectorSize);
 		currentSectorY = (int) Mathf.Floor(y / sectorSize);
+	}
+
+	private void UpdatePlayerPosition() {
+		float x = player.transform.position.x;
+		float y = player.transform.position.y;
+		float z = player.transform.position.z;
+		float sectorSize = Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
+		//float sectorHeight = Generation.TILE_HEIGHT * Generation.MAX_SECTOR_TRANSFORM;
+		int subtractX = (int) (currentSectorX * sectorSize);
+		//int subtractY = (int)(currentSectorX * sectorSize);
+		int subtractZ = (int)(currentSectorY * sectorSize);
+
+		currentBlockX = (int) Mathf.Floor((x - subtractX) / Generation.TILE_SIZE);
+		currentBlockY = (int) Mathf.Floor(y / Generation.TILE_HEIGHT);
+		currentBlockZ = (int) Mathf.Floor((z - subtractZ) / Generation.TILE_SIZE);
 	}
 }

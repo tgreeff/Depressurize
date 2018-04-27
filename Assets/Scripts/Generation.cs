@@ -468,10 +468,10 @@ public class Generation {
 		yield return null;
 	}
 
-	public void SpawnEnemies(int sectorX, int sectorY) {
+	public void SpawnEnemies(int sectorX, int sectorY, int playerX, int playerY, int playerZ) {
 		int type = rand.Next(1, EnemySpawning.ENEMY_PREFAB_COUNT);
 		int count = rand.Next(1, 5);
-		enemySpawner.SpawnEnemies(sectors[sectorX,sectorY], type, count);
+		enemySpawner.SpawnEnemies(sectors[sectorX,sectorY], type, count, playerX, playerY, playerZ);
 	}
 	//Check if next to spawn
 	private bool CheckForSpawn(Sector s, int x, int y, int z) {
@@ -537,7 +537,7 @@ public class Generation {
 					int transInt = sectors[xSector, ySector].GetMapTransform(x, y, z);
 					int transBelow = sectors[xSector, ySector].GetMapTransform(x, y - 1, z);
 					int transAbove = sectors[xSector, ySector].GetMapTransform(x, y + 1, z);
-					if (transInt != EMPTY) {
+					if (transInt != EMPTY && transAbove != HALL_HATCH_DOWN && transBelow != HALL_LADDER_UP) {
 						Transform transform = tiles[transInt];
 						Vector3 position = new Vector3(
 							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * xSector + (TILE_SIZE * x) + transform.position.x, 
@@ -548,6 +548,9 @@ public class Generation {
 						Quaternion rotation = Quaternion.identity;
 						rotation.eulerAngles = new Vector3(0, 90 * transRot, 0);
 						GameObject.Instantiate(transform, position, rotation);	
+					}
+					else {
+						sectors[xSector, ySector].SetMapTransform(x, y, z, EMPTY);
 					}
 				}
 			}

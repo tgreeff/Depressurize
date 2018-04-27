@@ -17,12 +17,14 @@ public class ArtificialGravity : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if(other.gameObject.tag == "Inside") {
 			gameObject.GetComponent<Rigidbody>().useGravity = true;
+			gameObject.GetComponent<Rigidbody>().isKinematic = true;
 		}
 	}
 
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag == "Inside") {
 			gameObject.GetComponent<Rigidbody>().useGravity = false;
+			gameObject.GetComponent<Rigidbody>().isKinematic = false;
 		}
 	}
 }

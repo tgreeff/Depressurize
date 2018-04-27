@@ -6,34 +6,34 @@ using UnityEngine.UI;
 public class WeaponSwitch : MonoBehaviour {
 
     public GameObject myBox;
-    public GameObject myGun;
-
-
-
+    public GameObject myTurret;
+	public GameObject myGun;
 
     // Use this for initialization
     void Start () {
 		myBox.SetActive(false);
-    }
+		myTurret.SetActive(false);
+	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown("1")) {
+			myTurret.SetActive(false);
+			myBox.SetActive(true);
+			GetComponent<PlayerIO>().enabled = true;
+		}
 
-        if (Input.GetKeyDown("2"))
+		if (Input.GetKeyDown("2")) {
+			myTurret.SetActive(true);
+			myBox.SetActive(false);
+			GetComponent<PlayerIO>().enabled = true;
+		}
+		if (Input.GetKeyDown("3"))
         {
-            myBox.SetActive(false);
+			myTurret.SetActive(false);
+			myBox.SetActive(false);
             GetComponent<PlayerIO>().enabled = false;
         }
-
-        if (Input.GetKeyDown("1"))
-        {
-            
-            myBox.SetActive(true);
-            GetComponent<PlayerIO>().enabled = true;
-        }
-
-    
-
     }
 
 

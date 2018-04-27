@@ -10,6 +10,7 @@ TagManager:
   - Coin
   - Inside
   - Waypoint
+  - Turret
   layers:
   - Default
   - TransparentFX

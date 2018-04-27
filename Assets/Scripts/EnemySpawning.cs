@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,29 +30,31 @@ public class EnemySpawning {
 		numberSpider = 0;
 	}
 
-	public void SpawnEnemies(Sector s, int type, int count) {
+	public void SpawnEnemies(Sector s, int type, int count, int playerX, int playerY, int playerZ) {
 		if(totalEnemies >= MAX_ENEMY_COUNT) {
 			return;
 		}
 
 		currentSector = s;
-		Vector3Int[] tileLocations = new Vector3Int[16 * 16 * 16];
+		Vector3Int[] tileLocations = new Vector3Int[100];
 
 		int index = 0;
-		for(int x = 0; x < 16; x++){
-			for (int y = 0; y < 16; y++) {
-				for (int z = 0; z < 16; z++) {
-					tileLocations[index] = new Vector3Int(x, y, z);
-					index++;
-				}
-			}
+		for(int x = -5; x < 4; x++){
+			for (int z = -5; z < 4; z++) {
+				try {
+					if (s.GetMapTransform(playerX + x, playerY, playerZ + z) != 0) {
+						tileLocations[index] = new Vector3Int(playerX + x , playerY, playerZ + z);
+						index++;
+					}
+				} catch (Exception e) { }
+			}			
 		}
 
 		for (int t = 0; t < count; t++) {
-			index = Random.Range(0, 16 * 16 * 16);
-			int x = tileLocations[index].x;
-			int y = tileLocations[index].y;
-			int z = tileLocations[index].z;
+			int i = UnityEngine.Random.Range(0, index);
+			int x = tileLocations[i].x;
+			int y = tileLocations[i].y;
+			int z = tileLocations[i].z;
 			if (s.GetMapTransform(x, y, z) != 0 ) {
 				Instantiate(type, x, y, z);
 				count--;
