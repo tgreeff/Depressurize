@@ -8,6 +8,8 @@ TagManager:
   - Block
   - Ammo
   - Coin
+  - Inside
+  - Waypoint
   layers:
   - Default
   - TransparentFX

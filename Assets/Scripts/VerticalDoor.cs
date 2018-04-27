@@ -29,6 +29,10 @@ public class VerticalDoor : MonoBehaviour {
 			door.transform.position = new Vector3(doorPos.x, Time.deltaTime * -speed + doorPos.y, doorPos.z);
 
 		}
+		if(gameObject.transform.position.y < start) {
+			Vector3 doorPos = door.transform.position;
+			door.transform.position = new Vector3(doorPos.x, doorPos.y, doorPos.z);
+		}
 	}
 
 	void OnTriggerEnter(Collider other) {

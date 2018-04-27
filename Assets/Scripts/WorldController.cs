@@ -29,9 +29,9 @@ public class WorldController : MonoBehaviour {
 		float tSize = Generation.TILE_SIZE;
 		int max = Generation.MAX_SECTOR_TRANSFORM;
 		float xPos = (tSize * max) * spawnSectorX + (tSize * worldGeneration.spawnPositionX);
-		float yPos = (tSize * worldGeneration.spawnPositionY);
+		float yPos = (Generation.TILE_HEIGHT * worldGeneration.spawnPositionY);
 		float zPos = (tSize * max) * spawnSectorY + (tSize * worldGeneration.spawnPositionZ);
-		Player.transform.position = new Vector3( xPos, yPos, zPos);
+		Player.transform.position = new Vector3( xPos, yPos+1, zPos);
 	
 		if(drawDistance == 0) {
 			drawDistance = 1;
