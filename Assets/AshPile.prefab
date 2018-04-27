@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114759051759680096}
   m_Layer: 0
   m_Name: AshPile
-  m_TagString: Untagged
+  m_TagString: Ash
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

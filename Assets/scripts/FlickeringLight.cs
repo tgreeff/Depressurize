@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class FlickeringLight : MonoBehaviour {
 
+
     Light testLight;
     public float minWaitTime;
     public float maxWaitTime;
 
-    void Start() {
-		if(minWaitTime == 0f && maxWaitTime == 0f) {
-			minWaitTime = Random.Range(0.1f, 0.3f);
-			maxWaitTime = Random.Range(0.3f, 5);
-		}
+    void Start()
+    {
         testLight = GetComponent<Light>();
         StartCoroutine(Flashing());
     }

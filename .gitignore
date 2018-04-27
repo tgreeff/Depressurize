@@ -4,9 +4,7 @@ Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
-Library/CurrentLayout.dwlt
 obj/
 .vs/
 
-*log
 *.csproj

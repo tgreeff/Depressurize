@@ -8,9 +8,10 @@ TagManager:
   - Block
   - Ammo
   - Coin
-  - Inside
-  - Waypoint
-  - Turret
+  - Ash
+  - Water
+  - Air
+  - Health
   layers:
   - Default
   - TransparentFX
