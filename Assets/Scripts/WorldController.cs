@@ -3,28 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldController : MonoBehaviour {
-	public GameObject Player;
+	public GameObject player;
 	public Transform[] blocks;
+	public Transform[] enemies;
 	public int currentSectorX;
 	public int currentSectorY;
+	public int currentBlockX;
+	public int currentBlockY;
+	public int currentBlockZ;
 
 	private Generation worldGeneration;
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
 	private float timer = 0;
 	private float timeLimit = 30;
-	private int spawnSectorX, spawnSectorY;
+	public int spawnSectorX, spawnSectorY;
 
 	void Start () {
-		spawnSectorX = currentSectorX = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
-		spawnSectorY = currentSectorY = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
-		worldGeneration = new Generation(drawDistance, blocks, currentSectorX, currentSectorY);
+		timer = 30;
+
+		spawnSectorX = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
+		spawnSectorY = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
+		currentSectorX = spawnSectorX;
+		currentSectorY = spawnSectorY;
+		worldGeneration = new Generation(drawDistance, blocks, enemies, currentSectorX, currentSectorY);
 
 		float tSize = Generation.TILE_SIZE;
 		int max = Generation.MAX_SECTOR_TRANSFORM;
 		float xPos = (tSize * max) * spawnSectorX + (tSize * worldGeneration.spawnPositionX);
-		float yPos = (tSize * worldGeneration.spawnPositionY);
+		float yPos = (Generation.TILE_HEIGHT * worldGeneration.spawnPositionY);
 		float zPos = (tSize * max) * spawnSectorY + (tSize * worldGeneration.spawnPositionZ);
-		Player.transform.position = new Vector3( xPos, yPos, zPos);
+		player.transform.position = new Vector3( xPos, yPos+1, zPos);
 	
 		if(drawDistance == 0) {
 			drawDistance = 1;
@@ -51,6 +59,10 @@ public class WorldController : MonoBehaviour {
 			CheckDrawDistance();
 			UpdateCurrentSector();
 			timer = 0;
+		}
+		else if(timer >= 5 && timer != timeLimit) {
+			UpdatePlayerPosition();
+			worldGeneration.SpawnEnemies(currentSectorX, currentSectorY, currentBlockX, currentBlockY, currentBlockZ);
 		}
 		else {
 			timer += Time.deltaTime;
@@ -87,13 +99,27 @@ public class WorldController : MonoBehaviour {
 		}
 	}
 
-	//TODO
 	private void UpdateCurrentSector() {
-		int x = (int) Player.transform.position.x;
-		int y = (int) Player.transform.position.z;
-		int sectorSize = (int) Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
+		float x = player.transform.position.x;
+		float y = player.transform.position.z;
+		float sectorSize = Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
 
-		currentSectorX = x - (x % sectorSize);
-		currentSectorY = y - (y % sectorSize);
+		currentSectorX = (int) Mathf.Floor(x / sectorSize);
+		currentSectorY = (int) Mathf.Floor(y / sectorSize);
+	}
+
+	private void UpdatePlayerPosition() {
+		float x = player.transform.position.x;
+		float y = player.transform.position.y;
+		float z = player.transform.position.z;
+		float sectorSize = Generation.TILE_SIZE * Generation.MAX_SECTOR_TRANSFORM;
+		//float sectorHeight = Generation.TILE_HEIGHT * Generation.MAX_SECTOR_TRANSFORM;
+		int subtractX = (int) (currentSectorX * sectorSize);
+		//int subtractY = (int)(currentSectorX * sectorSize);
+		int subtractZ = (int)(currentSectorY * sectorSize);
+
+		currentBlockX = (int) Mathf.Floor((x - subtractX) / Generation.TILE_SIZE);
+		currentBlockY = (int) Mathf.Floor(y / Generation.TILE_HEIGHT);
+		currentBlockZ = (int) Mathf.Floor((z - subtractZ) / Generation.TILE_SIZE);
 	}
 }

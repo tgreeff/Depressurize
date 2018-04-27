@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Generation {
 	public static System.Random rand = new System.Random();
 	public Transform[] tiles;
-			
+
+	public EnemySpawning enemySpawner;
+
 	Sector[,] sectors;
 	public int spawnPositionX, spawnPositionY, spawnPositionZ;
 	public int numTiles = 0;
@@ -13,6 +16,7 @@ public class Generation {
 	//-------CONSTANTS/-------
 	public const int MAX_SECTOR = 128;
 	public const int MAX_SECTOR_TRANSFORM = 16;
+	public const float TILE_HEIGHT = 4.21f;
 	public const float TILE_SIZE = 10.5f;
 	public const int EMPTY = 0;
 	public const int START = 1;
@@ -26,7 +30,7 @@ public class Generation {
 	public const int HALL_LADDER_UP = 9;
 
 	// Use this for initialization
-	public Generation(int drawDist, Transform[] b, int sectorX, int sectorY) {
+	public Generation(int drawDist, Transform[] b, Transform[] e, int sectorX, int sectorY) {
 		//Copy Tile table
 		tiles = new Transform[b.Length];
 		for (int x = 0; x < b.Length; x++) {
@@ -53,6 +57,7 @@ public class Generation {
 		GenerateSector(sectorX, sectorY);
 		sectors[sectorX, sectorY].SetMapTransform(spawnPositionX, spawnPositionY, spawnPositionZ, START);
 		numTiles++;
+		enemySpawner = new EnemySpawning(e);
 	}
 
 	//TODO: Make it so that some sectors don't generate
@@ -86,68 +91,64 @@ public class Generation {
 	//Add special cases as the tiles are added
 	//TODO: Add ladders and other rooms with connections
 	//TODO: Add vertical connections
+	//TODO: Add coroutines
 	private void AddHalls(Sector s, int xPos, int yPos, int zPos) {
-		Vector2[] last = new Vector2[50];
-
+		Vector4[] last = new Vector4[120];
 		int i = 0;
-		int numPaths = rand.Next(1, 4);
-		int placedPaths = 0;
-		int passes = 0; //rotation value and number of iter
+		int rotation = 0;
+
 		for (int x = -1; x < 2; x++) { //start from spawn
 			for (int z = -1; z < 2; z++) {
 				if (x == 0 ^ z == 0 ) {
 					Vector2 from = new Vector2(xPos + x, zPos + z);
-
-					int path = rand.Next(0, 1);
-					if(placedPaths < numPaths && (numPaths - placedPaths) >= (4 - passes)) {
-						path = 1;
-					}
-					else if(placedPaths > numPaths) {
-						path = 0;
+					s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL);
+					Vector4[] continueLast = GeneratePath(s, from, yPos, rotation);
+					rotation -= 2;
+					if(rotation < 0) {
+						rotation = 4 - rotation;
 					}
 
-					if (path != 0) { 
-						s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL);
-						last[i] = GeneratePath(s, from, yPos);
-						i++;
-						placedPaths++;
-					} else {
-						s.SetMapTransform((int) from.x, yPos, (int) from.y, HALL_DEAD_END);
+					for(int t = 0; t < continueLast.Length; t++ ) {
+						if(continueLast[t] != null) {
+							last[i] = continueLast[t];
+							i++;
+						}
 					}
-					passes++;
-				}	
+				}
 			}
-		}
-
+		}	
 		s.SetMapRotation(xPos+1, yPos, zPos, 0);
 		s.SetMapRotation(xPos-1, yPos, zPos, 2);
 		s.SetMapRotation(xPos, yPos, zPos+1, 3);
 		s.SetMapRotation(xPos, yPos, zPos-1, 1);
 
-		for (int y = 0; y < 16; y++) { //Make paths on each layer
-			if(y != spawnPositionY) {
-
+		//Continue with last parts
+		for (int x = 0; x < last.Length; x++) { 
+			if (last[x] != null) {
+				Vector2 from = new Vector2(last[x].x, last[x].z);
+				GeneratePath(s, from, (int) last[x].y, (int) last[x].w);
 			}
 		}
 		//check edge to connect other sectors
 	}
 
-	//TODO: Add Rotations, Make recursive function of this for continuing off of left open areas
 	//Creates a hallway path between 2 points in a sector
-	private Vector2 GeneratePath(Sector s, Vector2 from,  int y) {
+	//TODO: Add Rotations, Make recursive function of this for continuing off of left open areas
+	private Vector4[] GeneratePath(Sector s, Vector2 from,  int y, int dir) {
 		int catchLoop = 0;
 		int numberHalls = rand.Next(20, 50);
+
+		Vector4[] continueLater = new Vector4[30];
+		int w = 0;
 		
 		int x = (int) from.x;
 		int z = (int) from.y;
 		int lastX = (int)from.x;
 		int lastZ = (int)from.y;
-		bool movedX = false;
-		bool movedZ = false;
 		int prevTransform = s.GetMapTransform((int) from.x, y, (int) from.y);
-		int direction = 0; // 0 = East, 1 = South, 2 = West, 3 = North
+		int direction = dir; // 0 = East, 1 = South, 2 = West, 3 = North
 
-		for (int n  = 0; n < numberHalls && catchLoop < 100; n++) {
+		for (int n  = 0; n < numberHalls && catchLoop < 1000; n++) {
 			int path = rand.Next(0, 99); //Calculate direction
 			bool choosePath = true;
 			while(choosePath) {
@@ -167,7 +168,7 @@ public class Generation {
 					choosePath = false;
 				}
 				else if (prevTransform == HALL_CORNER) {
-					direction = direction + 1 % 4;
+					direction = (direction + 1) % 4;
 					if(direction == 0) {
 						x++;
 					}
@@ -185,7 +186,7 @@ public class Generation {
 				else if(prevTransform == HALL_TRI) {
 					int r = rand.Next(0, 1);
 					if(r == 0) { // Right
-						direction = direction + 1 % 4;
+						direction = (direction + 1) % 4;
 					}
 					else { //Left
 						direction--;
@@ -195,22 +196,34 @@ public class Generation {
 					}
 					if (direction == 0) {
 						x++;
+						continueLater[w] = new Vector4(x-2, y, z, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else if (direction == 1) {
 						z--;
+						continueLater[w] = new Vector4(x, y, z+2, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else if (direction == 2) {
 						x--;
+						continueLater[w] = new Vector4(x+2, y, z, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else {
 						z++;
+						continueLater[w] = new Vector4(x, y, z-2, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					choosePath = false;
 				}
 				else if(prevTransform == HALL_QUAD) {
 					int r = rand.Next(0, 2);
 					if (r == 0) { //Right
-						direction = direction + 1 % 4;
+						direction = (direction + 1) % 4;
 					}
 					else if (r == 1) { //Straight
 						
@@ -223,28 +236,104 @@ public class Generation {
 					}
 					if (direction == 0) {
 						x++;
+						continueLater[w] = new Vector4(x-2, y, z, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else if (direction == 1) {
 						z--;
+						continueLater[w] = new Vector4(x, y, z+2, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else if (direction == 2) {
 						x--;
+						continueLater[w] = new Vector4(x+2, y, z, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					else {
 						z++;
+						continueLater[w] = new Vector4(x, y, z-2, direction);
+						w++;
+						if (w >= continueLater.Length) w = continueLater.Length - 1;
 					}
 					choosePath = false;
 				}
 				else if(prevTransform == HALL_HATCH_DOWN) {
-
+					if(y > 0) {
+						for (int i = 0; i < 2; i++) {
+							direction = (direction + 1) % 4;
+						}
+						//y--;
+						if (direction == 0) {
+							//x++;
+							continueLater[w] = new Vector4(x-1, y-1, z, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else if (direction == 1) {
+							//z--;
+							continueLater[w] = new Vector4(x, y-1, z+1, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else if (direction == 2) {
+							//x--;
+							continueLater[w] = new Vector4(x+1, y-1, z, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else {
+							//z++;
+							continueLater[w] = new Vector4(x, y-1, z-1, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+					}
+					else {
+						prevTransform = HALL;
+					}
 					choosePath = false;
 				}
 				else if (prevTransform == HALL_LADDER_UP) {
-
+					if (y < MAX_SECTOR_TRANSFORM - 1) {
+						for (int i = 0; i < 2; i++) {
+							direction = (direction + 1) % 4;
+						}
+						//y++;
+						if (direction == 0) {
+							x++;
+							continueLater[w] = new Vector4(x-1, y+1, z, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else if (direction == 1) {
+							z--;
+							continueLater[w] = new Vector4(x, y+1, z+1, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else if (direction == 2) {
+							x--;
+							continueLater[w] = new Vector4(x+1, y+1, z, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+						else {
+							z++;
+							continueLater[w] = new Vector4(x, y+1, z-1, direction);
+							w++;
+							if (w >= continueLater.Length) w = continueLater.Length - 1;
+						}
+					}
+					else {
+						prevTransform = HALL;
+					}
 					choosePath = false;
 				}
-				else if (path < 25) {					//x++, east
-					if(lastX < x) { //prevent backtracking
+				else if (path < 25) {                   //x++, east
+					if (lastX < x) { //prevent backtracking
 						continue;
 					}
 					else {
@@ -286,9 +375,9 @@ public class Generation {
 							direction = 3;
 						}
 						choosePath = false;
-					}			
+					}
 				}
-				else if(path >= 75 && path < 100) { //z--, south
+				else if (path >= 75 && path < 100) { //z--, south
 					if (lastZ > z) { //prevent backtracking
 						continue;
 					}
@@ -301,111 +390,89 @@ public class Generation {
 							direction = 1;
 						}
 						choosePath = false;
-					}			
-				}
-			}
-			int currentSpot = s.GetMapTransform(x, y, z);
-			if (currentSpot == EMPTY || currentSpot == HALL_DEAD_END) {  //transform not taken up
-				if(lastZ != z && movedX || lastX != x && movedZ) { //last was in other dir
-					s.SetMapTransform(x, y, z, HALL_CORNER);
-					prevTransform = HALL_CORNER;
-				}
-				if((lastZ != z && movedZ) || (lastX != x && movedX)) { //last was in same dir
-					bool chooseTile = true;
-					while(chooseTile) {
-						int type = rand.Next(0, 99);
-						if (type < 20) {
-							s.SetMapTransform(x, y, z, HALL);
-							prevTransform = HALL;
-							chooseTile = false;
-						}
-						else if (type >= 20 && type < 50) {
-							s.SetMapTransform(x, y, z, HALL_CORNER);
-							prevTransform = HALL_CORNER;
-							chooseTile = false;
-						}
-						else if(type >= 50 && type < 75) {
-							s.SetMapTransform(x, y, z, HALL_TRI);
-							prevTransform = HALL_TRI;
-							chooseTile = false;
-						}
-						else if(type >= 85 && type < 90) {
-							s.SetMapTransform(x, y, z, HALL_QUAD);
-							prevTransform = HALL_QUAD;
-							chooseTile = false;
-						}
-						else if (type >= 85 && type < 95 && prevTransform != HALL_HATCH_DOWN) {
-							s.SetMapTransform(x, y, z, HALL_HATCH_DOWN);
-							prevTransform = HALL_HATCH_DOWN;
-							chooseTile = false;
-						}
-						else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
-							s.SetMapTransform(x, y, z, HALL_LADDER_UP);
-							prevTransform = HALL_LADDER_UP;
-							chooseTile = false;
-						}
-						s.SetMapRotation(x, y, z, direction);
 					}
 				}
-				else if (lastZ != z) {
-					s.SetMapTransform(x, y, z, HALL);
-					s.SetMapRotation(x, y, z, direction);
-					prevTransform = HALL;
-				}
-				else if (lastX != x) {
-					s.SetMapTransform(x, y, z, HALL);
-					s.SetMapRotation(x, y, z, direction);
-					prevTransform = HALL;
-				}
-		
-				catchLoop = 0;
-				if (lastZ != z) { //update after to retain last
-					movedZ = true;
-					lastZ = z;
-				}
-				else if (lastX != x) {
-					movedX = true;
-					lastX = x;
-				}
 			}
+
+			int currentSpot = s.GetMapTransform(x, y, z);
+			if (currentSpot == EMPTY || currentSpot == HALL_DEAD_END) {  //transform not taken up
+				bool chooseTile = true;
+				while (chooseTile) {
+
+					int type = rand.Next(0, 99);
+					if (type < 20) {
+						s.SetMapTransform(x, y, z, HALL);
+						prevTransform = HALL;
+						chooseTile = false;
+					}
+					else if (type >= 20 && type < 50) {
+						s.SetMapTransform(x, y, z, HALL_CORNER);
+						prevTransform = HALL_CORNER;
+						chooseTile = false;
+					}
+					else if (type >= 50 && type < 75) {
+						s.SetMapTransform(x, y, z, HALL_TRI);
+						prevTransform = HALL_TRI;
+						chooseTile = false;
+					}
+					else if (type >= 85 && type < 90) {
+						s.SetMapTransform(x, y, z, HALL_QUAD);
+						prevTransform = HALL_QUAD;
+						chooseTile = false;
+					}
+					else if (type >= 85 && type < 95 && prevTransform != HALL_HATCH_DOWN) {
+						try {
+							if (s.GetMapTransform(x, y - 1, z) == 0) {
+								s.SetMapTransform(x, y, z, HALL_HATCH_DOWN);
+								prevTransform = HALL_HATCH_DOWN;
+								chooseTile = false;
+							}
+						}
+						catch (Exception e) { }
+					}
+					else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
+						try {
+							if (s.GetMapTransform(x, y + 1, z) == 0) {
+								s.SetMapTransform(x, y, z, HALL_LADDER_UP);
+								prevTransform = HALL_LADDER_UP;
+								chooseTile = false;
+							}
+						}
+						catch (Exception e) { }
+					}
+				}
+				s.SetMapRotation(x, y, z, direction);				
+			}		
 			else { //When spot is already taken up control when back tracking				
 				numberHalls++;
-				movedX = false;
-				movedZ = false;
 				lastX = x;
 				lastZ = z;
 				catchLoop++;
 				prevTransform = EMPTY;
 			}
-
 		}	
-		return new Vector2(x, z);
-	}
-	
-	private int ControlCoordinate(int value) {
-		if(value > MAX_SECTOR_TRANSFORM - 1) {
-			return MAX_SECTOR_TRANSFORM - 1;
-		}
-		else if(value < 0){
-			return 0;
-		}
-		return value;
+		return continueLater;
 	}
 
 	//TODO: Adds rooms connected to hallway
-	private void AddRooms(Sector s) {
-
+	private IEnumerator AddRooms(Sector s) {
+		yield return null;
 	}
 
 	//TODO: Adds minable asteroids to the sector
-	private void AddAsteroids(Sector s) {
-
+	private IEnumerator AddAsteroids(Sector s) {
+		yield return null;
 	}
 
-	private void AddItems(Sector s) {
-		
+	private IEnumerator AddItems(Sector s) {
+		yield return null;
 	}
 
+	public void SpawnEnemies(int sectorX, int sectorY, int playerX, int playerY, int playerZ) {
+		int type = rand.Next(1, EnemySpawning.ENEMY_PREFAB_COUNT);
+		int count = rand.Next(1, 5);
+		enemySpawner.SpawnEnemies(sectors[sectorX,sectorY], type, count, playerX, playerY, playerZ);
+	}
 	//Check if next to spawn
 	private bool CheckForSpawn(Sector s, int x, int y, int z) {
 		bool xP = false;
@@ -462,26 +529,29 @@ public class Generation {
 	}
 
 	//Instantiates the transform of the tile 
-	//TODO: Have objects rotate to allign 
+	//TODO: Add coroutines
 	public void InstanciateSector(int xSector, int ySector) {
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
 					int transInt = sectors[xSector, ySector].GetMapTransform(x, y, z);
-					if(transInt != EMPTY) {
+					int transBelow = sectors[xSector, ySector].GetMapTransform(x, y - 1, z);
+					int transAbove = sectors[xSector, ySector].GetMapTransform(x, y + 1, z);
+					if (transInt != EMPTY && transAbove != HALL_HATCH_DOWN && transBelow != HALL_LADDER_UP) {
 						Transform transform = tiles[transInt];
 						Vector3 position = new Vector3(
 							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * xSector + (TILE_SIZE * x) + transform.position.x, 
-							TILE_SIZE * y + transform.position.y, 
+							TILE_HEIGHT * y + transform.position.y, 
 							(TILE_SIZE * MAX_SECTOR_TRANSFORM) * ySector + (TILE_SIZE * z) + transform.position.z);
 						int transRot = sectors[xSector, ySector].GetMapRotation(x, y, z);
 						
 						Quaternion rotation = Quaternion.identity;
 						rotation.eulerAngles = new Vector3(0, 90 * transRot, 0);
-						GameObject.Instantiate(transform, position, rotation);
-
-						
-					}						
+						GameObject.Instantiate(transform, position, rotation);	
+					}
+					else {
+						sectors[xSector, ySector].SetMapTransform(x, y, z, EMPTY);
+					}
 				}
 			}
 		}

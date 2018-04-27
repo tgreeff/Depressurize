@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114153852894630108}
   m_Layer: 0
   m_Name: OxyTank
-  m_TagString: Air
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

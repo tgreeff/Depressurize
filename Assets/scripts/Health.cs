@@ -8,7 +8,7 @@ public class Health : MonoBehaviour {
 
     public Image fillImg;
     float remainingAmt = 300;
-    public float dmg = 0;
+    private float dmg = 0;
 
 
     private void Start()
@@ -24,8 +24,6 @@ public class Health : MonoBehaviour {
         {
             toDeath();
         }
-
-        fillImg.fillAmount = dmg / remainingAmt;
 
     }
 
