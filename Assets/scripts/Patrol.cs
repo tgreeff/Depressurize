@@ -34,7 +34,6 @@ public class Patrol : MonoBehaviour {
 			GameObject[] worldNodes = GameObject.FindGameObjectsWithTag ("Waypoint");
 			int[] pastWaypointIndices = { -1, -1 };
 			int nearestWaypointIndex = 0;
-			Vector3 oldDistance = worldNodes [nearestWaypointIndex].transform.position - transform.position;
 			for (int i = 0; i < worldNodes.Length; i++) {
 				if (pastWaypointIndices[0] == -1 && (worldNodes [i].transform.position - (agent.destination)).sqrMagnitude < samePositionLeeway) {
 					pastWaypointIndices [0] = i;
@@ -49,10 +48,22 @@ public class Patrol : MonoBehaviour {
 					}
 				}
 				if (i != pastWaypointIndices[0] && i != pastWaypointIndices[1]) {
-					Vector3 newDistance = worldNodes [i].transform.position - transform.position;
-					if (newDistance.sqrMagnitude < oldDistance.sqrMagnitude) {
+					NavMeshPath oldPath = new NavMeshPath();
+					agent.CalculatePath (worldNodes [nearestWaypointIndex].transform.position, oldPath);
+					float oldPathLength = 0.0f;
+					for (int j = 1; j < oldPath.corners.Length; j++) {
+						oldPathLength += Mathf.Abs(Vector3.Distance (oldPath.corners [j - 1], oldPath.corners [j]));
+					}
+
+					NavMeshPath newPath = new NavMeshPath();
+					agent.CalculatePath (worldNodes [i].transform.position, newPath);
+					float newPathLength = 0.0f;
+					for (int j = 1; j < newPath.corners.Length; j++) {
+						newPathLength += Mathf.Abs(Vector3.Distance (newPath.corners [j - 1], newPath.corners [j]));
+					}
+
+					if (newPathLength < oldPathLength) {
 						nearestWaypointIndex = i;
-						oldDistance = newDistance;
 					}
 				}
 			}
