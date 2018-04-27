@@ -44,6 +44,7 @@ public class WeaponSwitch : MonoBehaviour {
             other.gameObject.SetActive(false);
             GetComponent<PlayerIO>().numBlocks += 10;
             myGun.GetComponent<RayCastShootComplete>().ammo += 10;
+            
         }
 
         if (other.gameObject.CompareTag("Coin"))

@@ -12,6 +12,7 @@ public class DayCounter : MonoBehaviour {
     float time;
     float dayTime = 10;
 
+   
     int days;
 
 
@@ -43,6 +44,7 @@ public class DayCounter : MonoBehaviour {
             timeAmt = dayTime;
             time = timeAmt;
         }
+        PlayerPrefs.SetInt("days", days);
 
         dayText.text = days.ToString();
     }
