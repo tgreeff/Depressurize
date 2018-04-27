@@ -300,7 +300,6 @@
     <Compile Include="Assets\SampleScenes\Scripts\ParticleSceneControls.cs" />
     <Compile Include="Assets\SampleScenes\Scripts\PlaceTargetWithMouse.cs" />
     <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
-    <Compile Include="Assets\scripts\Air.cs" />
     <Compile Include="Assets\scripts\AttackBox.cs" />
     <Compile Include="Assets\scripts\BuildAmmo.cs" />
     <Compile Include="Assets\scripts\compassScript.cs" />
@@ -323,7 +322,6 @@
     <Compile Include="Assets\scripts\SuitAmmo.cs" />
     <Compile Include="Assets\scripts\timerTwo.cs" />
     <Compile Include="Assets\scripts\UI_Hover.cs" />
-    <Compile Include="Assets\scripts\Water.cs" />
     <Compile Include="Assets\scripts\WeaponSwitch.cs" />
     <Compile Include="Assets\scripts\WorldController.cs" />
     <Compile Include="Assets\Shared Assets\PostProcessing\Runtime\Attributes\GetSetAttribute.cs" />

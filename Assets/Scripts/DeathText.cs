@@ -22,7 +22,7 @@ public class DeathText : MonoBehaviour {
 
     void toScreen()
     {
-        dayText.text = ("You Died and only survived " + deathPref.ToString() + " days.");
+        dayText.text = ("You Died and only survived " + deathPref.ToString() + " days better luck next time.");
     }
 
 }

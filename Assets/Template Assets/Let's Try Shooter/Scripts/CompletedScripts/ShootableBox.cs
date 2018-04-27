@@ -51,35 +51,35 @@ public class ShootableBox : MonoBehaviour {
 
 
             // ammo
-            if (dropNum < 10 && dropNum >= 0)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(drop, transform.position, transform.rotation);
                 drop.SetActive(true);
             }
 
             // water
-            if (dropNum < 20 && dropNum >= 10)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(water, transform.position, transform.rotation);
                 water.SetActive(true);
             }
 
             // air
-            if (dropNum < 30 && dropNum >= 20)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(air, transform.position, transform.rotation);
                 air.SetActive(true);
             }
 
             // health
-            if (dropNum < 40 && dropNum >= 30)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(healthDrop, transform.position, transform.rotation);
                 healthDrop.SetActive(true);
             }
 
             // coins
-            if (dropNum < 50 && dropNum >= 40)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(coins, transform.position, transform.rotation);
                 coins.SetActive(true);
@@ -87,7 +87,7 @@ public class ShootableBox : MonoBehaviour {
 
 
             // ash
-            if (dropNum < 60 && dropNum >= 50)
+            if (dropNum < 40 && dropNum >= 0)
             {
                 Instantiate(ash, transform.position, transform.rotation);
                 ash.SetActive(true);
@@ -107,7 +107,7 @@ public class ShootableBox : MonoBehaviour {
 
     int roll()
     {
-        num = Random.Range(0, 60);
+        num = Random.Range(0, 30);
         return num;
 
     }
@@ -119,12 +119,11 @@ public class ShootableBox : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag == "Block")
-        {
-            /*
+        if (collision.collider.tag == "Shootable")
+        { 
             Debug.Log("HIT");
             health = collision.gameObject.GetComponent<AttackBox>();
-            collision.gameObject.GetComponent<AttackBox>().Damage(1);
+        
             if (health != null)
             {
                 Debug.Log("Blah");
@@ -133,10 +132,9 @@ public class ShootableBox : MonoBehaviour {
             }
             
         }
-        */
-        }
-
     }
+    
+	
 
 }
 

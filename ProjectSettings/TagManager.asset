@@ -8,10 +8,6 @@ TagManager:
   - Block
   - Ammo
   - Coin
-  - Ash
-  - Water
-  - Air
-  - Health
   layers:
   - Default
   - TransparentFX
