@@ -43,7 +43,7 @@ public class ShootableBox : MonoBehaviour {
             gameObject.SetActive(false);
 
             // reactivate 6 seconds later
-            Invoke("Show", 6);
+            Invoke("Show", 10);
 
 
             // drop drops
