@@ -53,7 +53,7 @@ public class PlayerIO : MonoBehaviour {
                 if (Input.GetKeyDown("5") && numBlocks > 0)//GetMouseButtonDown(1))
                 {
                     numBlocks--;
-                    GameObject block = (GameObject)Instantiate(Resources.Load("Box"), retAdd.transform.position, Quaternion.identity);
+                    GameObject block = (GameObject)Instantiate(Resources.Load("SpaceBox"), retAdd.transform.position, Quaternion.identity);
                 }
 
                 else if (Input.GetKeyDown("0"))

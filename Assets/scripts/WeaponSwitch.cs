@@ -42,7 +42,6 @@ public class WeaponSwitch : MonoBehaviour {
         if (other.gameObject.CompareTag("Ammo"))
         {
             other.gameObject.SetActive(false);
-            GetComponent<PlayerIO>().numBlocks += 10;
             myGun.GetComponent<RayCastShootComplete>().ammo += 10;
             
         }
@@ -51,6 +50,29 @@ public class WeaponSwitch : MonoBehaviour {
         {
             other.gameObject.SetActive(false);
             GetComponent<PlayerIO>().numBlocks += 10;
+        }
+
+        if (other.gameObject.CompareTag("Water"))
+        {
+            other.gameObject.SetActive(false);
+            GetComponent<Water>().time += 20;
+        }
+
+        if (other.gameObject.CompareTag("Air"))
+        {
+            other.gameObject.SetActive(false);
+            GetComponent<Air>().time += 20;
+        }
+
+        if (other.gameObject.CompareTag("Health"))
+        {
+            other.gameObject.SetActive(false);
+            GetComponent<Health>().dmg += 20;
+        }
+
+        if (other.gameObject.CompareTag("Ash"))
+        {
+            other.gameObject.SetActive(false);
         }
 
     }
