@@ -50,15 +50,20 @@ public class PlayerIO : MonoBehaviour {
                 {
                     retDelete.GetComponent<Renderer>().enabled = false;
                 }
-                if (Input.GetKeyDown("5") && numBlocks > 0)//GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && numBlocks > 0)//GetMouseButtonDown(1))
                 {
                     numBlocks--;
                     GameObject block = (GameObject)Instantiate(Resources.Load("SpaceBox"), retAdd.transform.position, Quaternion.identity);
                 }
 
-                else if (Input.GetKeyDown("0"))
+                else if (Input.GetMouseButtonDown(2))
                 {
-                Destroy(hit.transform.gameObject);
+
+                    if (hit.transform.tag == "Block")
+                    {
+                        Destroy(hit.transform.gameObject);
+                    }
+                    
                 }
             }
         else

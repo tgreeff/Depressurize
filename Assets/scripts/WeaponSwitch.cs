@@ -8,12 +8,14 @@ public class WeaponSwitch : MonoBehaviour {
     public GameObject myBox;
     public GameObject myGun;
 
-
+    public GameObject imgOne;
+    public GameObject imgTwo;
 
 
     // Use this for initialization
     void Start () {
-      
+        imgOne.SetActive(true);
+
     }
 	
 	// Update is called once per frame
@@ -21,13 +23,16 @@ public class WeaponSwitch : MonoBehaviour {
 
         if (Input.GetKeyDown("2"))
         {
+            imgOne.SetActive(false);
+            imgTwo.SetActive(true);
             myBox.SetActive(false);
             GetComponent<PlayerIO>().enabled = false;
         }
 
         if (Input.GetKeyDown("1"))
         {
-            
+            imgTwo.SetActive(false);
+            imgOne.SetActive(true);
             myBox.SetActive(true);
             GetComponent<PlayerIO>().enabled = true;
         }
