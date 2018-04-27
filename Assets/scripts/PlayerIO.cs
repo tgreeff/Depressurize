@@ -93,7 +93,15 @@ public class PlayerIO : MonoBehaviour {
                     GameObject block = (GameObject)Instantiate(Resources.Load("SpaceBox"), retAdd.transform.position, Quaternion.identity);
                 }
 
-                else if (Input.GetMouseButtonDown(2))
+            if (4 == 8)
+            {
+                retAdd.GetComponent<Renderer>().enabled = false;
+                retDelete.GetComponent<Renderer>().enabled = false;
+                retTurretAdd.GetComponent<Renderer>().enabled = false;
+                retTurretDelete.GetComponent<Renderer>().enabled = false;
+            }
+
+            else if (Input.GetMouseButtonDown(2))
                 {
 
                     if (hit.transform.tag == "Block")
@@ -104,14 +112,10 @@ public class PlayerIO : MonoBehaviour {
                 }
             }
         }
-        else
-        {
-            retAdd.GetComponent<Renderer>().enabled = false;
-            retDelete.GetComponent<Renderer>().enabled = false;
-			retTurretAdd.GetComponent<Renderer>().enabled = false;
-			retTurretDelete.GetComponent<Renderer>().enabled = false;
-		}
+        
     }
+
+
 
     /*
     void canBuild()
@@ -125,4 +129,4 @@ public class PlayerIO : MonoBehaviour {
     */
 
 
-}
+
