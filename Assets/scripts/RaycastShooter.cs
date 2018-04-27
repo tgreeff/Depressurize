@@ -10,6 +10,10 @@ public class RaycastShooter : MonoBehaviour
     public float hitForce = 100f;
     public Transform gunEnd;
 
+    public int ammo = 13;
+    
+
+
     private Camera fpsCam;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     private AudioSource gunAudio;
@@ -29,8 +33,10 @@ public class RaycastShooter : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFire)
+        if (Input.GetButtonDown("Fire1") && Time.time > nextFire && ammo > 0)
         {
+            ammo--;
+
             nextFire = Time.time + fireRate;
 
             //StartCoroutine(ShotEffect());

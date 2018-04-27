@@ -65,7 +65,7 @@ public class EnemyBox : MonoBehaviour {
     }
 
 
-    private void OnTriggerEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
