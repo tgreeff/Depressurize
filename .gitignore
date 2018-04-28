@@ -8,6 +8,9 @@ Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
 Library/CurrentLayout.dwlt
+Library/*.log
+Library/PlayerDataCache
+Library/LastBuild.buildreport
 obj/
 .vs/
 

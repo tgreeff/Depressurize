@@ -21,6 +21,6 @@ public class NewGameB : MonoBehaviour {
 
     public void LoadByIndex()
     {
-        SceneManager.LoadScene("TestSwarm");
+        SceneManager.LoadScene("GameWorld");
     }
 }

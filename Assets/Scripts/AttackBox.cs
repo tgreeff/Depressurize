@@ -20,7 +20,7 @@ public class AttackBox : MonoBehaviour {
         }
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Shootable"))
         {

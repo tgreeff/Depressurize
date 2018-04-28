@@ -1614,10 +1614,10 @@ MonoBehaviour:
   target: {fileID: 0}
   moveSpeed: 1
   rotationSpeed: 3
-  attackThreshold: 3
+  attackThreshold: 1
   chaseThreshold: 10
   giveUpThreshold: 20
-  attackRepeatTime: 5
+  attackRepeatTime: 0
   myTransform: {fileID: 0}
 --- !u!114 &114223562361197126
 MonoBehaviour:
@@ -1632,11 +1632,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 3
   drop: {fileID: 1365612580320196, guid: 46083d6f52054d5448df9d16424e6fe8, type: 2}
-  water: {fileID: 0}
-  air: {fileID: 0}
-  healthDrop: {fileID: 0}
-  coins: {fileID: 0}
-  ash: {fileID: 0}
+  water: {fileID: 100000, guid: 22be511398a4acc4d8eb5ee60838c933, type: 3}
+  air: {fileID: 100000, guid: 51970a9f7e7972344a06220527d89c13, type: 3}
+  healthDrop: {fileID: 100000, guid: 24ebe4904dc86334bb1a3e797be7200e, type: 3}
+  coins: {fileID: 1615331575336766, guid: 233e6b2644a091b419d87fa75e34dfb4, type: 2}
+  ash: {fileID: 100000, guid: 153f4311980e4cf4f88d2bdd968332a6, type: 3}
 --- !u!114 &114326245528080588
 MonoBehaviour:
   m_ObjectHideFlags: 1
