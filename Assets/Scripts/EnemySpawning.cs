@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawning {
-	private int totalEnemies;
+	public int totalEnemies;
 	private int numberSpider;
 	private int numberFlying;
 	private Sector currentSector;
@@ -46,7 +46,9 @@ public class EnemySpawning {
 						tileLocations[index] = new Vector3Int(playerX + x , playerY, playerZ + z);
 						index++;
 					}
-				} catch (Exception e) { }
+				} catch (Exception e) {
+					Debug.Log(e.ToString());
+				}
 			}			
 		}
 

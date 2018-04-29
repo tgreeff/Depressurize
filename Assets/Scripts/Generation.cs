@@ -109,7 +109,7 @@ public class Generation {
 					}
 
 					for(int t = 0; t < continueLast.Length; t++ ) {
-						if(continueLast[t] != null) {
+						if(!continueLast[t].Equals(null)) {
 							last[i] = continueLast[t];
 							i++;
 						}
@@ -124,7 +124,7 @@ public class Generation {
 
 		//Continue with last parts
 		for (int x = 0; x < last.Length; x++) { 
-			if (last[x] != null) {
+			if (!last[x].Equals(null)) {
 				Vector2 from = new Vector2(last[x].x, last[x].z);
 				GeneratePath(s, from, (int) last[x].y, (int) last[x].w);
 			}
@@ -428,7 +428,9 @@ public class Generation {
 								chooseTile = false;
 							}
 						}
-						catch (Exception e) { }
+						catch (Exception e) {
+							Debug.Log(e.ToString());
+						}
 					}
 					else if (type >= 95 && type < 100 && prevTransform != HALL_LADDER_UP) {
 						try {
@@ -438,7 +440,9 @@ public class Generation {
 								chooseTile = false;
 							}
 						}
-						catch (Exception e) { }
+						catch (Exception e) {
+							Debug.Log(e.ToString());
+						}
 					}
 				}
 				s.SetMapRotation(x, y, z, direction);				

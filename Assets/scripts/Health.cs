@@ -29,8 +29,9 @@ public class Health : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Shootable")
+        if (collision.gameObject.tag.Equals("Shootable"))
         {
+			Debug.Log("Enemy attacked the player");
             dmg -= 20;
             fillImg.fillAmount = dmg / remainingAmt;
         }

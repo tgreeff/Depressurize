@@ -12,7 +12,7 @@ public class WorldController : MonoBehaviour {
 	public int currentBlockY;
 	public int currentBlockZ;
 
-	private Generation worldGeneration;
+	public Generation worldGeneration;
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
 	private float timer = 0;
 	private float timeLimit = 30;

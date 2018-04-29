@@ -1569,7 +1569,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 4
   m_CollisionDetection: 0
 --- !u!65 &65332357631030574
 BoxCollider:
@@ -1582,7 +1582,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 3.089344, y: 1.3417044, z: 3.7575207}
-  m_Center: {x: -0.013584137, y: 0.17085218, z: 0.043910027}
+  m_Center: {x: 0, y: 0.51, z: 0}
 --- !u!95 &95359082776153378
 Animator:
   serializedVersion: 3
@@ -1612,9 +1612,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 3
+  moveSpeed: 1
   rotationSpeed: 3
-  attackThreshold: 3
+  attackThreshold: 1
   chaseThreshold: 10
   giveUpThreshold: 20
   attackRepeatTime: 0
@@ -1632,11 +1632,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 3
   drop: {fileID: 1365612580320196, guid: 46083d6f52054d5448df9d16424e6fe8, type: 2}
-  water: {fileID: 0}
-  air: {fileID: 0}
-  healthDrop: {fileID: 0}
-  coins: {fileID: 0}
-  ash: {fileID: 0}
+  water: {fileID: 1804059799374506, guid: b5919f40c50d391468b4889e07065b9f, type: 2}
+  air: {fileID: 1998633175673108, guid: 3f6012e052b133644986090a0e6d0572, type: 2}
+  healthDrop: {fileID: 1234875363613552, guid: 97f83933945dc3742b83713f804e7ec2, type: 2}
+  coins: {fileID: 1615331575336766, guid: 233e6b2644a091b419d87fa75e34dfb4, type: 2}
+  ash: {fileID: 1045468742627024, guid: efd9db6627dee63479d1848bdb2baa54, type: 2}
 --- !u!114 &114326245528080588
 MonoBehaviour:
   m_ObjectHideFlags: 1

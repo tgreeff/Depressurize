@@ -16,7 +16,10 @@ public class AttackBox : MonoBehaviour {
         if (currentHealth <= 0)
         {
             //if health has fallen below zero, deactivate it 
-            gameObject.SetActive(false);
+            Destroy(gameObject);
+			WorldController controller = GameObject.FindGameObjectWithTag("Controller").GetComponent<WorldController>();
+			Generation gen = controller.worldGeneration;
+			gen.enemySpawner.totalEnemies--;
         }
     }
 

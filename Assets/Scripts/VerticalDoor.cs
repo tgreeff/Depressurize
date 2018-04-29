@@ -37,7 +37,7 @@ public class VerticalDoor : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if(other.gameObject.tag.Equals("Player")) {
-			Debug.Log("Player entered the door");
+			//Debug.Log("Player entered the door");
 			if(gameObject.transform.position.y <= stop) {
 				Vector3 doorPos = door.transform.position;
 				door.transform.position = new Vector3(doorPos.x, Time.deltaTime * speed + doorPos.y, doorPos.z);
@@ -47,7 +47,7 @@ public class VerticalDoor : MonoBehaviour {
 
 	void OnTriggerStay(Collider other) {
 		if (other.gameObject.tag.Equals("Player")) {
-			Debug.Log("Player stayed at door");
+			//Debug.Log("Player stayed at door");
 			if (gameObject.transform.position.y <= stop) {
 				Vector3 doorPos = door.transform.position;
 				door.transform.position = new Vector3(doorPos.x, Time.deltaTime * speed + doorPos.y, doorPos.z);
@@ -57,7 +57,7 @@ public class VerticalDoor : MonoBehaviour {
 
 	void OnTriggerExit(Collider other) {
 		if (other.gameObject.tag.Equals("Player")) {
-			Debug.Log("Player left the door");
+			//Debug.Log("Player left the door");
 			left = true;
 		}
 	}

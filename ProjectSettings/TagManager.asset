@@ -11,6 +11,11 @@ TagManager:
   - Inside
   - Waypoint
   - Turret
+  - Oxygen
+  - Water
+  - Health
+  - Ash
+  - Controller
   layers:
   - Default
   - TransparentFX

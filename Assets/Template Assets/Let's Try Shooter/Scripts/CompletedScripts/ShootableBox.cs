@@ -43,7 +43,7 @@ public class ShootableBox : MonoBehaviour {
             gameObject.SetActive(false);
 
             // reactivate 6 seconds later
-            Invoke("Show", 6);
+            //Invoke("Show", 6);
 
 
             // drop drops
@@ -51,48 +51,46 @@ public class ShootableBox : MonoBehaviour {
 
 
             // ammo
-            if (dropNum < 40 && dropNum >= 0)
+            if (dropNum <= 20)
             {
                 Instantiate(drop, transform.position, transform.rotation);
                 drop.SetActive(true);
             }
 
             // water
-            if (dropNum < 40 && dropNum >= 0)
+            else if (dropNum > 20 && dropNum <= 40)
             {
                 Instantiate(water, transform.position, transform.rotation);
                 water.SetActive(true);
             }
 
-            // air
-            if (dropNum < 40 && dropNum >= 0)
-            {
+			// air
+			else if (dropNum > 40 && dropNum <= 60)
+			{
                 Instantiate(air, transform.position, transform.rotation);
                 air.SetActive(true);
             }
 
-            // health
-            if (dropNum < 40 && dropNum >= 0)
-            {
+			// health
+			else if (dropNum > 60 && dropNum <= 80)
+			{
                 Instantiate(healthDrop, transform.position, transform.rotation);
                 healthDrop.SetActive(true);
             }
 
-            // coins
-            if (dropNum < 40 && dropNum >= 0)
-            {
+			// coins
+			else if (dropNum > 80 && dropNum <= 100)
+			{
                 Instantiate(coins, transform.position, transform.rotation);
                 coins.SetActive(true);
             }
 
-
-            // ash
-            if (dropNum < 40 && dropNum >= 0)
-            {
+			// ash
+			else if (dropNum > 80 && dropNum <= 100)
+			{
                 Instantiate(ash, transform.position, transform.rotation);
                 ash.SetActive(true);
             }
-
 
             // reset health
             currentHealth = 3;
@@ -107,10 +105,11 @@ public class ShootableBox : MonoBehaviour {
 
     int roll()
     {
-        num = Random.Range(0, 30);
+        num = Random.Range(0, 100);
         return num;
 
     }
+
 
     void Update()
     {
