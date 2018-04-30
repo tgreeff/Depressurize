@@ -16,11 +16,16 @@ public class WorldController : MonoBehaviour {
 	public int drawDistance; //TODO: could posibly be changed to next closest sector, instead of draw distance
 	private float timer = 0;
 	private float timeLimit = 30;
+	private float timer2 = 0;
+	private float timer2Limit = 10;
 	public int spawnSectorX, spawnSectorY;
+	private bool changeY;
+	private int numEnemies;
 
 	void Start () {
 		timer = 30;
-
+		changeY = false;
+		numEnemies = 0;
 		spawnSectorX = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
 		spawnSectorY = Generation.rand.Next(drawDistance, Generation.MAX_SECTOR - (drawDistance + 1));
 		currentSectorX = spawnSectorX;
@@ -67,6 +72,29 @@ public class WorldController : MonoBehaviour {
 		else {
 			timer += Time.deltaTime;
 		}
+
+		if(numEnemies == worldGeneration.enemySpawner.totalEnemies) {
+			timer2 += Time.deltaTime;
+			if(timer2 >= timer2Limit) {
+				GameObject[] spiders = GameObject.FindGameObjectsWithTag("Shootable");
+				if(spiders != null) {
+					//for (int x = 0; x < spiders.Length; x++) {
+						//Destroy(spiders[x]);
+					//}
+				}
+				worldGeneration.enemySpawner.totalEnemies = 0;
+				timer2 = 0f;
+			}
+		}
+		else {
+			timer2 = 0f;
+		}
+
+		if (changeY) {
+			worldGeneration.enemySpawner.totalEnemies = 0;
+			changeY = false;
+		}
+		numEnemies = worldGeneration.enemySpawner.totalEnemies;
 	}
 
 	private void CheckDrawDistance() {
@@ -117,9 +145,12 @@ public class WorldController : MonoBehaviour {
 		int subtractX = (int) (currentSectorX * sectorSize);
 		//int subtractY = (int)(currentSectorX * sectorSize);
 		int subtractZ = (int)(currentSectorY * sectorSize);
-
+		int lastY = currentBlockY;
 		currentBlockX = (int) Mathf.Floor((x - subtractX) / Generation.TILE_SIZE);
 		currentBlockY = (int) Mathf.Floor(y / Generation.TILE_HEIGHT);
 		currentBlockZ = (int) Mathf.Floor((z - subtractZ) / Generation.TILE_SIZE);
+		if(lastY != currentBlockY) {
+			changeY = true;
+		}
 	}
 }

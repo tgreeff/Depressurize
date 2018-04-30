@@ -12,6 +12,9 @@ public class WeaponSwitch : MonoBehaviour {
 	public GameObject buildImg;
 	public GameObject handImg;
 
+	public GameObject oxygen;
+	public GameObject water;
+
 	// Use this for initialization
 	void Start () {
 		buildImg.SetActive(false);
@@ -62,16 +65,16 @@ public class WeaponSwitch : MonoBehaviour {
 
 		if (other.gameObject.CompareTag("Oxygen")) {
 			Destroy(other.gameObject);
-			GetComponent<PlayerIO>().numBlocks += 10;
+			oxygen.GetComponent<Oxygen>().dmg += 100;
 
 		}
 		if (other.gameObject.CompareTag("Water")) {
 			Destroy(other.gameObject);
-
+			water.GetComponent<WaterScript>().dmg += 100;
 		}
 		if (other.gameObject.CompareTag("Health")) {
 			Destroy(other.gameObject);
-			GetComponent<PlayerIO>().numBlocks += 10;
+			GetComponent<Health>().dmg += 50;
 
 		}
 		if (other.gameObject.CompareTag("Ash")) {

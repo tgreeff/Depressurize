@@ -6,6 +6,7 @@ public class ShootableBox : MonoBehaviour {
 	//The box's current health point total
 	public int currentHealth = 3;
     AttackBox health;
+	public GameObject controller;
 
     int num;
     int dropNum;
@@ -37,13 +38,12 @@ public class ShootableBox : MonoBehaviour {
 		//Check if health has fallen below zero
 		if (currentHealth <= 0) 
 		{
-            
-
+			controller.GetComponent<WorldController>().worldGeneration.enemySpawner.totalEnemies -= 1;       
             //if health has fallen below zero, deactivate it 
-            gameObject.SetActive(false);
-
+            //gameObject.SetActive(false);
+			Destroy(this.gameObject);
             // reactivate 6 seconds later
-            //Invoke("Show", 6);
+            //Invoke("Show", 30);
 
 
             // drop drops

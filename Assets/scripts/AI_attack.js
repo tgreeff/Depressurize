@@ -1,6 +1,7 @@
 #pragma strict
 
 var target : Transform; //the enemy's target
+var controller : GameObject;
 var moveSpeed = 3; //move speed
 var rotationSpeed = 3; //speed of turning
 var attackThreshold = 3; // distance within which to attack
@@ -8,10 +9,9 @@ var chaseThreshold = 10; // distance within which to start chasing
 var giveUpThreshold = 20; // distance beyond which AI gives up
 var attackRepeatTime = 0; // delay between attacks when within range
 
+
 private var attackTime = 0.0f;
 private var chasing = false;
-
-
 
 var myTransform : Transform; //current transform data of this enemy
 
@@ -44,7 +44,8 @@ function Update () {
 		 
 		 // give up, if too far away from target:
 		 if (distance > giveUpThreshold) {
-			 chasing = false;
+		 	chasing = false;
+		 	//controller.
 		 }
 		 // attack, if close enough, and if time is OK:
 		 if (distance < attackThreshold && Time.time > attackTime) {
