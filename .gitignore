@@ -1,5 +1,15 @@
 Temp/
+Assets/Plugins/
 Library/cache/
 Library/metadata/
 Library/ScriptAssemblies/
 Library/ShaderCache/
+Library/CurrentLayout.dwlt
+Library/*.log
+Library/PlayerDataCache
+Library/LastBuild.buildreport
+obj/
+.vs/
+
+*log
+*.csproj
