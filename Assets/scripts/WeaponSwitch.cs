@@ -9,11 +9,13 @@ public class WeaponSwitch : MonoBehaviour {
     public GameObject myTurret;
 	public GameObject myGun;
 
-	public Image buildImg;
-	public Image handImg;
+	public GameObject buildImg;
+	public GameObject handImg;
 
 	// Use this for initialization
 	void Start () {
+		buildImg.SetActive(false);
+		handImg.SetActive(true);
 		myBox.SetActive(false);
 		myTurret.SetActive(false);
 	}
@@ -21,18 +23,24 @@ public class WeaponSwitch : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown("1")) {
+			buildImg.SetActive(true);
+			handImg.SetActive(false);
 			myTurret.SetActive(false);
 			myBox.SetActive(true);
 			GetComponent<PlayerIO>().enabled = true;
 		}
 
 		if (Input.GetKeyDown("2")) {
+			buildImg.SetActive(true);
+			handImg.SetActive(false);
 			myTurret.SetActive(true);
 			myBox.SetActive(false);
 			GetComponent<PlayerIO>().enabled = true;
 		}
 		if (Input.GetKeyDown("3"))
         {
+			buildImg.SetActive(false);
+			handImg.SetActive(true);
 			myTurret.SetActive(false);
 			myBox.SetActive(false);
             GetComponent<PlayerIO>().enabled = false;
